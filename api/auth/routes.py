@@ -1,10 +1,10 @@
 # imports #
 # ------- #
-import datetime
+import datetime, os
 from datetime import timedelta
 from flask import Blueprint, abort, jsonify, request, current_app, url_for
 from itsdangerous import URLSafeTimedSerializer
-from api import db, bcrypt, jwt
+from api import db, bcrypt, jwt, app
 from api.functions import send_email
 from api.collections import user_collection
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, create_refresh_token, get_jwt_identity
@@ -94,8 +94,8 @@ def test_protection():
 @auth.route("/confirm_email/<token>", methods=["PATCH"])
 def confirm_email(token):
 
-    ts = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
-    email = ts.loads(token, salt=current_app.config['SECURITY_PASSWORD_SALT'], max_age=3600)
+    ts = URLSafeTimedSerializer(os.environ.get('SECRET_KEY'))
+    email = ts.loads(token, salt=os.environ.get('SECURITY_PASSWORD_SALT'), max_age=3600)
 
     user = user_collection.find_one({"email": email})
     if user:

@@ -1,17 +1,20 @@
 # imports #
 # ------- # 
-import datetime, uuid
-from flask import Blueprint, jsonify, request
+import datetime, os
+from flask import Blueprint, jsonify, request, url_for, current_app
 from api import bcrypt
 from bson import ObjectId
 from api.decorators import admin_required
 from api.collections import user_collection, admin_collection
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from api.functions import generate_confirmation_token, generate_public_id
+from api.functions import generate_confirmation_token, generate_public_id, generate_avatar, send_email
+from flask_cors import cross_origin
+import cloudinary.uploader, cloudinary, cloudinary.api
 
 user = Blueprint('user', __name__)
 
 @user.route('/create-user', methods=['POST'])
+@cross_origin()
 def create_user():
     
     # query for user
@@ -19,7 +22,7 @@ def create_user():
 
     if not existing_user:
 
-        try:
+       # try:
             # register the user
             password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
             email = request.json['email']
@@ -34,6 +37,9 @@ def create_user():
                 return jsonify({"message": "This username is already taken."}), 409
             
             else:
+               # user_av = generate_avatar()
+               # av_upload_url = cloudinary.uploader.upload(user_av)
+                
                 # register the user
                 user_collection.insert_one({
                                         "name": name,
@@ -41,18 +47,38 @@ def create_user():
                                         "username": username,
                                         "password": password,
                                         "public_id": generate_public_id(),
+                                        # "profile_pic": {
+                                        #                 'image': av_upload_url['secure_url'],
+                                        #                 'image_id': av_upload_url['public_id']
+                                        #             },
                                         "admin": True,
                                         "confirmed_email": False,
                                         "created_at": datetime.datetime.utcnow(),
                                         "confirmed_at": None,
                                         "last_login": datetime.datetime.utcnow()
                 })
+                # generate confirmation token and send email
+                token = generate_confirmation_token(email=email)
                 
-                generate_confirmation_token(email=email)
+                subject = "Confirm your e-mail address"
+                confirm_url = url_for("auth.confirm_email", token=token,  _external=True)
+                body = f"Hi {name}, Please confirm your email address" + \
+                f"by clicking on the link: {confirm_url} " + \
+                f"If you didn't ask sign up on Wishlinx, ignore this mail."
+                
+                send_email(
+                    current_app,
+                    recipients=[email],
+                    subject=subject,
+                    text=body,
+                    sender=os.environ.get('SES_EMAIL_SOURCE')
+                )
+                
+                print("confirmation sent")
                 return jsonify({"message": "This user has been created successfully, and a confirmation email has been sent."}), 201
                         
-        except Exception as e:
-            return jsonify({"message": str(e)}), 500
+               # except Exception as e:
+                    #return jsonify({"message": str(e)}), 500
         
     else:
         # if user exists
@@ -60,7 +86,7 @@ def create_user():
             "message" : "This user already exists."
         }
         return jsonify(response), 409
-        
+            
 
 # get all users        
 @user.route('/users', methods=['GET'])
@@ -91,17 +117,17 @@ def get_user():
     user_id = get_jwt_identity() # retrieve user id from jwt token
     user = user_collection.find_one({"_id": ObjectId(user_id)}) # find user by id
     
-    if not user:
-        return jsonify({"message": 'User not found'}), 404
-    
-    user_data = {}
-    user_data["id"] = str(user['_id'])
-    user_data["public_id"] = str(user['public_id'])
-    user_data["name"] = str(user['name'])
-    user_data["username"] = str(user['username'])
-    user_data["email"] = str(user['email'])
-    
-    return jsonify(user_data), 200
+    if user:
+        user_data = {}
+        user_data["id"] = str(user['_id'])
+        user_data["public_id"] = str(user['public_id'])
+        user_data["name"] = str(user['name'])
+        user_data["username"] = str(user['username'])
+        user_data["email"] = str(user['email'])
+        
+        return jsonify(user_data), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
 
 
 # update user details
@@ -133,10 +159,7 @@ def update_user():
             return jsonify(response), 400
 
     else:
-        response = {
-            "message" : "This user does not exist."
-        }
-        return jsonify(response), 404
+        return jsonify({"message": "User not found"}), 404
     
 
 # delete user details       
