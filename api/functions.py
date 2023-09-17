@@ -1,10 +1,12 @@
 # imports #
 # ------- #
-import os, requests, uuid, random, string, boto3, logging
-from flask import jsonify, url_for
+import os, requests, uuid, random, string, boto3
 from itsdangerous import URLSafeTimedSerializer
 from api.collections import user_collection, admin_collection
 from dicebear import DAvatar, DStyle, DOptions, DColor
+from api import app
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'} # allowed file extensions for uploads
 
 # send email function
 def send_email(app, recipients, subject, text, sender):
@@ -28,7 +30,32 @@ def send_email(app, recipients, subject, text, sender):
             }
         }
     )
+    
+# check file extension
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# s3 upload function
+def s3_upload(file, folder):
+    s3 = boto3.client(
+        's3',
+        region_name=os.environ.get('S3_REGION_NAME'),
+         # bucket config
+        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+    )
+    bucket=os.environ.get('S3_BUCKET_NAME')
+    file_path = file.filename.replace(" ", "-")
+    key = folder + "/" + str(uuid.uuid4()) + "-" + file_path
+    s3.upload_fileobj(
+        file,
+        bucket,
+        key
+        )
+    object_url="https://"+bucket+".s3."+os.environ.get('S3_REGION_NAME')+".amazonaws.com/"+key #create Object URL  Manually
+    return object_url
+    
 # generate tokens for email confirmation
 def generate_confirmation_token(email):
 

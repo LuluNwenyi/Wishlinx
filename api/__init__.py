@@ -10,11 +10,9 @@ from flask_cors import CORS
 
 # app config
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECURITY_PASSWORD_SALT'] = os.environ.get("SECURITY_PASSWORD_SALT")
 app.config['MONGO_URI'] = os.environ.get('MONGODB_URI')
-app.config['CLOUD_NAME'] = os.environ.get('CLOUD_NAME')
-app.config['CLOUDINARY_API_KEY'] = os.environ.get('CLOUDINARY_API_KEY')
-app.config['CLOUDINARY_API_SECRET'] = os.environ.get('CLOUDINARY_API_SECRET')
-app.config['CLOUDINARY_URL'] = os.environ.get('CLOUDINARY_URL')
 app.config['SES_REGION_NAME'] = os.environ.get("SES_REGION_NAME")
 app.config['SES_EMAIL_SOURCE'] = os.environ.get("SES_EMAIL_SOURCE")
 app.config['AWS_ACCESS_KEY_ID'] = os.environ.get("AWS_ACCESS_KEY_ID")

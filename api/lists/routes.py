@@ -52,7 +52,7 @@ def get_lists():
     
     if user:
         # check for lists that belong to the user
-        user_list = list_collection.find({"user_id": user_id})
+        user_list = list_collection.find_one({"user_id": user_id})
         if user_list:
             # return list data
             all_lists = list_collection.find({})
@@ -103,7 +103,7 @@ def get_list(id):
             
             return jsonify(list_data), 200
         else:
-            return jsonify({"message": "You do not own this list."}), 401
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 401
     else:
         return jsonify({"message": "This user does not exist."}), 404
 
@@ -137,7 +137,7 @@ def update_list(id):
             except Exception as e:
                     return jsonify({"message": str(e)}), 500
         else:
-            return jsonify({"message": "You do not own this list."}), 401
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 401
     else:
         return jsonify({"message": "This user does not exist."}), 404
 
@@ -163,7 +163,7 @@ def delete_list(id):
             else:
                 return jsonify({"message": "This list cannot be deleted because it contains wishes."}), 401
         else:
-            return jsonify({"message": "This list does not exist or is not your own."}), 401 
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 401 
     else:
         return jsonify({"message": "This user does not exist."}), 404
 
@@ -192,6 +192,6 @@ def update_list_expiry_date(id):
             except Exception as e:
                 return jsonify({"message": str(e)}), 500
         else:
-            return jsonify({"message": "You do not own this list."}), 401
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 401
     else:
         return jsonify({"message": "This user does not exist."}), 404

@@ -118,15 +118,27 @@ def forgot_password():
     
     email = request.json['email']
     
+    # check if user with email exists
     user = user_collection.find_one({"email": email})
     if user:
+        user_name = str(user['name'])
 
         subject = "Reset Your Password"
         ts = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
         token = ts.dumps(email, salt=current_app.config["SECURITY_PASSWORD_SALT"])
         recovery_url = url_for("auth.reset_password", token=token,  _external=True)
-
-        send_email(to_email=email, subject=subject, template='password_reset.html', name=user['name'], action_url=recovery_url)
+        body = f"Hi {user_name}," + \
+                f"Reset your password by clicking on the link: {recovery_url} " + \
+                f"If you didn't ask to reset your password, ignore this mail."
+        
+        send_email(
+                    current_app,
+                    recipients=[email],
+                    subject=subject,
+                    text=body,
+                    sender=os.environ.get('SES_EMAIL_SOURCE')
+                )
+        
         return jsonify({ "msg": "succesfully sent the reset mail to your email"}), 200
     
     else:

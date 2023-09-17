@@ -5,9 +5,19 @@ from flask import Blueprint, jsonify, request
 from bson import ObjectId
 from api.collections import user_collection, list_collection, wish_collection
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from api.functions import generate_random_color
+from api.functions import allowed_file, s3_upload
 
 wish = Blueprint('wish', __name__)
+
+@wish.route('/upload', methods=['POST'])
+def upload_image_s3():
+    img = request.files['image']
+    if img and allowed_file(img.filename):
+        #img_path = img.filename.replace(' ', '-')
+        s3_url = s3_upload(file=img, 
+                  folder='wishes')
+        return jsonify({"message": "Image uploaded successfully.",
+                        "s3_url": s3_url}), 200
 
 # create lists
 @wish.route('/<list_id>/wish', methods=['POST'])
@@ -31,7 +41,6 @@ def create_wish(list_id):
                 quantity = request.json['quantity']
                 amount = request.json['amount']
                 currency = request.json['currency']
-                #image = request.json['image']
                 
                 new_wish = {
                     "user_id": str(user['_id']),
@@ -61,6 +70,25 @@ def create_wish(list_id):
     else:
         return jsonify({"message": "This user does not exist."}), 404
     
+    
+@wish.route('/<wish_id>/upload-wish-image', methods=['POST'])
+def upload_wish_image(wish_id):
+    img = request.files['image']
+    if img and allowed_file(img.filename):
+        try:
+            image_url = s3_upload(file=img, 
+                    folder='wishes')
+            wish_collection.update_one({"_id": ObjectId(wish_id)}, {"$set": {
+                                                                            "image_url": image_url,
+                                                                            "last_modified": datetime.datetime.utcnow()
+                                                                            }})
+            return jsonify({"message": "Image uploaded successfully.",
+                            "image_urll": image_url}), 200
+        except Exception as e:
+            return jsonify({"message": str(e)}), 500
+    else:
+        return jsonify({"message": "Please upload a valid image file."}), 500
+
 
 # get all wishes
 @wish.route('/<list_id>/wish', methods=['GET'])
@@ -72,7 +100,7 @@ def get_wishes(list_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id)})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
         
         if user_list:
             # retrieve all wishes in that list
@@ -90,13 +118,14 @@ def get_wishes(list_id):
                 wish_data["amount"] = str(wish['amount'])
                 wish_data["currency"] = str(wish['currency'])
                 wish_data["wish_list"] = str(wish['wish_list'])
+                wish_data["image_url"] = str(wish['image_url'])
         
                 wishes.append(wish_data)
                 
             return jsonify(wishes), 200
         
         else:
-            return jsonify({"message": "This list does not exist."}), 404
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 404
     else:
         return jsonify({"message": "This user does not exist."}), 404
                 
@@ -111,7 +140,7 @@ def get_wish(list_id, wish_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id)})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
         
         if user_list:
             # check if wish exists
@@ -129,6 +158,7 @@ def get_wish(list_id, wish_id):
                 wish_data["amount"] = str(wish['amount'])
                 wish_data["currency"] = str(wish['currency'])
                 wish_data["wish_list"] = str(wish['wish_list'])
+                wish_data["image_url"] = str(wish['image_url'])
                 
                 return jsonify(wish_data), 200
             
@@ -136,7 +166,7 @@ def get_wish(list_id, wish_id):
                 return jsonify({"message": "This wish does not exist."}), 404
             
         else:
-            return jsonify({"message": "This list does not exist."}), 404
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 404
         
     else:
         return jsonify({"message": "This user does not exist."}), 404
@@ -152,7 +182,7 @@ def update_wish(list_id, wish_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id)})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
         
         if user_list:
             # check if wish exists
@@ -194,7 +224,7 @@ def update_wish(list_id, wish_id):
                 return jsonify({"message": "This wish does not exist."}), 404
             
         else:
-            return jsonify({"message": "This list does not exist."}), 404
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 404
         
     else:
         return jsonify({"message": "This user does not exist."}), 404
@@ -210,7 +240,7 @@ def delete_wish(list_id, wish_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id)})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
         
         if user_list:
             # check if wish exists
@@ -226,7 +256,7 @@ def delete_wish(list_id, wish_id):
                 return jsonify({"message": "This wish does not exist."}), 404
             
         else:
-            return jsonify({"message": "This list does not exist."}), 404
+            return jsonify({"message": "This list does not exist or is not owned by this user."}), 404
         
     else:
         return jsonify({"message": "This user does not exist."}), 404    

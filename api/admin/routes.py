@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request
 from api import bcrypt
 from bson import ObjectId
 from api.decorators import admin_required
-from api.collections import admin_collection, user_collection
+from api.collections import user_collection
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from api.functions import generate_confirmation_token, generate_public_id
 
@@ -15,7 +15,7 @@ admin = Blueprint('admin', __name__)
 def create_admin():
     
     # query for user
-    existing_user = admin_collection.find_one({"email": request.json['email']})
+    existing_user = user_collection.find_one({"email": request.json['email']})
 
     if not existing_user:
 
@@ -28,14 +28,14 @@ def create_admin():
             
             # check if username is taken
             existing_user_username = user_collection.find_one({"username": username})
-            existing_admin_username = admin_collection.find_one({"username": username})
+            existing_admin_username = user_collection.find_one({"username": username})
             
             if existing_admin_username or existing_user_username is not None:
                 return jsonify({"message": "This username is already taken."}), 409
             
             else:
                 # register the user
-                admin_collection.insert_one({
+                user_collection.insert_one({
                                         "name": name,
                                         "email": email,
                                         "username": username,
@@ -68,7 +68,7 @@ def create_admin():
 @admin_required
 def admin_list():
     
-    all_admins = admin_collection.find({})
+    all_admins = user_collection.find({"admin": True})
     admin_list = []
     
     for admin in all_admins:
@@ -89,7 +89,7 @@ def admin_list():
 def get_admin():
     
     admin_id = get_jwt_identity() # retrieve admin id from jwt token
-    admin = admin_collection.find_one({"_id": ObjectId(admin_id)}) # find admin by id
+    admin = user_collection.find_one({"_id": ObjectId(admin_id)}) # find admin by id
     
     if not admin:
         return jsonify({"message": "Admin not found"}), 404
@@ -103,16 +103,17 @@ def get_admin():
 
 
 # update admin details
-@admin.route("/settings/profile", methods=["PATCH"])
+@admin.route("/admin/settings/profile", methods=["PATCH"])
 @jwt_required()
+@admin_required
 def update_admin():
 
     admin_id = get_jwt_identity() # retrieve user id from jwt token
-    admin_data = admin_collection.find_one({"_id": ObjectId(admin_id)}) # find user by id
+    admin_data = user_collection.find_one({"_id": ObjectId(admin_id)}) # find user by id
 
-    if admin_id:
+    if admin_data:
         try:
-            admin_collection.update_one(
+            user_collection.update_one(
                 {"_id": admin_data['_id']},
                 {
                     "$set": {
@@ -144,11 +145,11 @@ def update_admin():
 def delete_admin():
     
     admin_id = get_jwt_identity() # retrieve admin id from jwt token
-    admin = admin_collection.find_one({"_id": ObjectId(admin_id)}) # find admin by id
+    admin = user_collection.find_one({"_id": ObjectId(admin_id)}) # find admin by id
     
     if admin:
         try:
-            admin_collection.delete_one({"_id": ObjectId(admin_id)})
+            user_collection.delete_one({"_id": ObjectId(admin_id)})
             return jsonify({"message": "Admin deleted successfully"}), 200
         
         except Exception as e:

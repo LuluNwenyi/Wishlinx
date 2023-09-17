@@ -7,9 +7,8 @@ from bson import ObjectId
 from api.decorators import admin_required
 from api.collections import user_collection, admin_collection
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from api.functions import generate_confirmation_token, generate_public_id, generate_avatar, send_email
+from api.functions import generate_confirmation_token, generate_public_id, allowed_file, send_email, s3_upload
 from flask_cors import cross_origin
-import cloudinary.uploader, cloudinary, cloudinary.api
 
 user = Blueprint('user', __name__)
 
@@ -22,7 +21,7 @@ def create_user():
 
     if not existing_user:
 
-       # try:
+        try:
             # register the user
             password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
             email = request.json['email']
@@ -37,9 +36,6 @@ def create_user():
                 return jsonify({"message": "This username is already taken."}), 409
             
             else:
-               # user_av = generate_avatar()
-               # av_upload_url = cloudinary.uploader.upload(user_av)
-                
                 # register the user
                 user_collection.insert_one({
                                         "name": name,
@@ -47,23 +43,20 @@ def create_user():
                                         "username": username,
                                         "password": password,
                                         "public_id": generate_public_id(),
-                                        # "profile_pic": {
-                                        #                 'image': av_upload_url['secure_url'],
-                                        #                 'image_id': av_upload_url['public_id']
-                                        #             },
-                                        "admin": True,
+                                        "admin": False,
                                         "confirmed_email": False,
                                         "created_at": datetime.datetime.utcnow(),
                                         "confirmed_at": None,
                                         "last_login": datetime.datetime.utcnow()
                 })
-                # generate confirmation token and send email
+                
+                # generate confirmation token and send confirmation email
                 token = generate_confirmation_token(email=email)
                 
                 subject = "Confirm your e-mail address"
                 confirm_url = url_for("auth.confirm_email", token=token,  _external=True)
-                body = f"Hi {name}, Please confirm your email address" + \
-                f"by clicking on the link: {confirm_url} " + \
+                body = f"Hi {name}," + \
+                f"Please confirm your email address by clicking on the link: {confirm_url} " + \
                 f"If you didn't ask sign up on Wishlinx, ignore this mail."
                 
                 send_email(
@@ -74,11 +67,11 @@ def create_user():
                     sender=os.environ.get('SES_EMAIL_SOURCE')
                 )
                 
-                print("confirmation sent")
+                #print("confirmation sent")
                 return jsonify({"message": "This user has been created successfully, and a confirmation email has been sent."}), 201
                         
-               # except Exception as e:
-                    #return jsonify({"message": str(e)}), 500
+        except Exception as e:
+            return jsonify({"message": str(e)}), 500
         
     else:
         # if user exists
@@ -86,11 +79,28 @@ def create_user():
             "message" : "This user already exists."
         }
         return jsonify(response), 409
-            
+
+
+@user.route('/upload-profile-image', methods=['POST'])
+@jwt_required()
+def upload_profile_image():
+    img = request.files['image']
+    if img and allowed_file(img.filename):
+        try:
+            image_url = s3_upload(file=img, 
+                    folder='profiles')
+            return jsonify({"message": "Image uploaded successfully.",
+                            "image_url": image_url}), 200
+        except Exception as e:
+            return jsonify({"message": str(e)}), 500
+    else:
+        return jsonify({"message": "Please upload a valid image file."}), 500
+      
 
 # get all users        
 @user.route('/users', methods=['GET'])
 @jwt_required()
+@admin_required
 def user_list():
     
     all_users = user_collection.find({})
@@ -165,7 +175,6 @@ def update_user():
 # delete user details       
 @user.route('/user', methods=['DELETE'])
 @jwt_required()
-@admin_required
 def delete_user():
 
     user_id = get_jwt_identity() # retrieve user id from jwt token
