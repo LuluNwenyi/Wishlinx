@@ -7,7 +7,7 @@ from bson import ObjectId
 from api.decorators import admin_required
 from api.collections import user_collection
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from api.functions import generate_confirmation_token, generate_public_id
+from api.functions import generate_confirmation_token, generate_public_id, allowed_file, send_email, s3_upload
 
 admin = Blueprint('admin', __name__)
 
@@ -60,7 +60,32 @@ def create_admin():
             "message" : "This user already exists."
         }
         return jsonify(response), 409
+
+@admin.route('/admin/upload-profile-image', methods=['POST'])
+@jwt_required()
+def upload_profile_image():
+    # check if user exists
+    admin_id = get_jwt_identity() # retrieve wish id from jwt token
+    admin = user_collection.find_one({"_id": ObjectId(admin_id)})
     
+    if admin:
+        img = request.files['image']
+        if img and allowed_file(img.filename):
+            try:
+                image_url = s3_upload(file=img, 
+                        folder='profiles')
+                user_collection.update_one({"_id": ObjectId(admin_id)}, {"$set": {
+                                                                                "image": image_url,
+                                                                                "last_modified": datetime.datetime.utcnow()
+                                                                                }})
+                return jsonify({"message": "Image uploaded successfully.",
+                                "image_url": image_url}), 200
+            except Exception as e:
+                return jsonify({"message": str(e)}), 500
+        else:
+            return jsonify({"message": "Please upload a valid image file."}), 500
+    else:
+        return jsonify({"message": "This user does not exist."}), 404     
 
 # get all admins        
 @admin.route('/admins', methods=['GET'])
@@ -76,6 +101,8 @@ def admin_list():
         admin_data["id"] = str(admin["_id"])
         admin_data["name"] = str(admin["name"])
         admin_data["email"] = str(admin["email"])
+        admin_data["username"] = str(admin["username"])
+        admin_data["image"] = str(admin["image"])
         
         admin_list.append(admin_data)
         
@@ -98,6 +125,8 @@ def get_admin():
     admin_data["id"] = str(admin["_id"])
     admin_data["name"] = str(admin["name"])
     admin_data["email"] = str(admin["email"])
+    admin_data["username"] = str(admin["username"])
+    admin_data["image"] = str(admin["image"])
     
     return jsonify(admin_data), 200
 

@@ -72,22 +72,35 @@ def create_wish(list_id):
     
     
 @wish.route('/<wish_id>/upload-wish-image', methods=['POST'])
+@jwt_required()
 def upload_wish_image(wish_id):
-    img = request.files['image']
-    if img and allowed_file(img.filename):
-        try:
-            image_url = s3_upload(file=img, 
-                    folder='wishes')
-            wish_collection.update_one({"_id": ObjectId(wish_id)}, {"$set": {
-                                                                            "image_url": image_url,
-                                                                            "last_modified": datetime.datetime.utcnow()
-                                                                            }})
-            return jsonify({"message": "Image uploaded successfully.",
-                            "image_urll": image_url}), 200
-        except Exception as e:
-            return jsonify({"message": str(e)}), 500
+    # check if user exists
+    user_id = get_jwt_identity() # retrieve wish id from jwt token
+    user = user_collection.find_one({"_id": ObjectId(user_id)})
+    
+    if user:
+        img = request.files['image']
+        if img and allowed_file(img.filename):
+            # check if wish exists
+            wish = wish_collection.find_one({"_id": ObjectId(wish_id)})
+            if wish:
+                try:
+                    image_url = s3_upload(file=img, 
+                            folder='wishes')
+                    wish_collection.update_one({"_id": ObjectId(wish_id)}, {"$set": {
+                                                                                    "image": image_url,
+                                                                                    "last_modified": datetime.datetime.utcnow()
+                                                                                    }})
+                    return jsonify({"message": "Image uploaded successfully.",
+                                    "image_url": image_url}), 200
+                except Exception as e:
+                    return jsonify({"message": str(e)}), 500
+            else: 
+                return jsonify({"message": "This wish does not exist."}), 404
+        else:
+            return jsonify({"message": "Please upload a valid image file."}), 500
     else:
-        return jsonify({"message": "Please upload a valid image file."}), 500
+        return jsonify({"message": "This user does not exist."}), 404
 
 
 # get all wishes
@@ -118,7 +131,7 @@ def get_wishes(list_id):
                 wish_data["amount"] = str(wish['amount'])
                 wish_data["currency"] = str(wish['currency'])
                 wish_data["wish_list"] = str(wish['wish_list'])
-                wish_data["image_url"] = str(wish['image_url'])
+                wish_data["image"] = str(wish['image'])
         
                 wishes.append(wish_data)
                 
@@ -158,7 +171,7 @@ def get_wish(list_id, wish_id):
                 wish_data["amount"] = str(wish['amount'])
                 wish_data["currency"] = str(wish['currency'])
                 wish_data["wish_list"] = str(wish['wish_list'])
-                wish_data["image_url"] = str(wish['image_url'])
+                wish_data["image"] = str(wish['image'])
                 
                 return jsonify(wish_data), 200
             

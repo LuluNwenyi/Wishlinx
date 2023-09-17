@@ -84,17 +84,28 @@ def create_user():
 @user.route('/upload-profile-image', methods=['POST'])
 @jwt_required()
 def upload_profile_image():
-    img = request.files['image']
-    if img and allowed_file(img.filename):
-        try:
-            image_url = s3_upload(file=img, 
-                    folder='profiles')
-            return jsonify({"message": "Image uploaded successfully.",
-                            "image_url": image_url}), 200
-        except Exception as e:
-            return jsonify({"message": str(e)}), 500
+    # check if user exists
+    user_id = get_jwt_identity() # retrieve wish id from jwt token
+    user = user_collection.find_one({"_id": ObjectId(user_id)})
+    
+    if user:
+        img = request.files['image']
+        if img and allowed_file(img.filename):
+            try:
+                image_url = s3_upload(file=img, 
+                        folder='profiles')
+                user_collection.update_one({"_id": ObjectId(user_id)}, {"$set": {
+                                                                                "image": image_url,
+                                                                                "last_modified": datetime.datetime.utcnow()
+                                                                                }})
+                return jsonify({"message": "Image uploaded successfully.",
+                                "image_url": image_url}), 200
+            except Exception as e:
+                return jsonify({"message": str(e)}), 500
+        else:
+            return jsonify({"message": "Please upload a valid image file."}), 500
     else:
-        return jsonify({"message": "Please upload a valid image file."}), 500
+        return jsonify({"message": "This user does not exist."}), 404
       
 
 # get all users        
@@ -113,6 +124,7 @@ def user_list():
         user_data["name"] = str(user['name'])
         user_data["username"] = str(user['username'])
         user_data["email"] = str(user['email'])
+        user_data["image"] = str(user['image'])
         
         user_list.append(user_data)
         
@@ -134,7 +146,8 @@ def get_user():
         user_data["name"] = str(user['name'])
         user_data["username"] = str(user['username'])
         user_data["email"] = str(user['email'])
-        
+        user_data["image"] = str(user['image'])
+                
         return jsonify(user_data), 200
     else:
         return jsonify({"message": "User not found"}), 404
