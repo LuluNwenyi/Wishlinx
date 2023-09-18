@@ -1,10 +1,10 @@
 # imports #
 # ------- #
-import os, requests, uuid, random, string, boto3
+import os, uuid, random, string, boto3
+from flask import jsonify
 from itsdangerous import URLSafeTimedSerializer
-from api.collections import user_collection, admin_collection
-from dicebear import DAvatar, DStyle, DOptions, DColor
-from api import app
+from api.collections import user_collection
+
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'} # allowed file extensions for uploads
 
@@ -61,16 +61,14 @@ def generate_confirmation_token(email):
 
     user = user_collection.find_one({"email": email})
     
-    if not user:
-        user = admin_collection.find_one({"email": email})
+    if user:
+        # generate token
+        serializer = URLSafeTimedSerializer(os.environ.get('SECRET_KEY'))
+        token = serializer.dumps(email, salt=os.environ.get('SECURITY_PASSWORD_SALT'))
+        
+        return token
     else:
-        pass
-
-    # generate token
-    serializer = URLSafeTimedSerializer(os.environ.get('SECRET_KEY'))
-    token = serializer.dumps(email, salt=os.environ.get('SECURITY_PASSWORD_SALT'))
-    
-    return token
+        return jsonify({"error": "User not found."})
 
 # generate unique id for users
 def generate_public_id(length=8):
@@ -92,19 +90,3 @@ def generate_random_color():
     hex_color = hex(color)
 
     return hex_color[2:] # removing the 0x from the hexadecimal string
-
-# generate avatar from dicebear
-def generate_avatar():
-    
-    # settings for the avatar
-    options = DOptions(
-    backgroundColor=DColor("transparent")
-    )
-    # generate avatar 
-    avatar = DAvatar(
-    style=DStyle.fun_emoji,
-    options=options
-    )
-    
-    return avatar.url_svg
-    

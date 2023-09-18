@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request, url_for, current_app
 from api import bcrypt
 from bson import ObjectId
 from api.decorators import admin_required
-from api.collections import user_collection, admin_collection
+from api.collections import user_collection
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from api.functions import generate_confirmation_token, generate_public_id, allowed_file, send_email, s3_upload
 from flask_cors import cross_origin
@@ -30,9 +30,8 @@ def create_user():
             
             # check if username is taken
             existing_user_username = user_collection.find_one({"username": username})
-            existing_admin_username = admin_collection.find_one({"username": username})
             
-            if existing_admin_username or existing_user_username:
+            if existing_user_username:
                 return jsonify({"message": "This username is already taken."}), 409
             
             else:
