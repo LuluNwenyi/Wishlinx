@@ -24,7 +24,7 @@ resource "mongodbatlas_database_user" "user" {
   username           = var.db_username
   password           = var.db_password
   project_id         = mongodbatlas_project.project.id 
-  auth_database_name = "wishlinx"
+  auth_database_name = "admin"
 
 
   roles {

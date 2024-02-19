@@ -12,11 +12,11 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 app.config['SECURITY_PASSWORD_SALT'] = os.environ.get("SECURITY_PASSWORD_SALT")
-app.config['MONGO_URI'] = os.environ.get('MONGODB_URI')
 app.config['SES_REGION_NAME'] = os.environ.get("SES_REGION_NAME")
 app.config['SES_EMAIL_SOURCE'] = os.environ.get("SES_EMAIL_SOURCE")
 app.config['AWS_ACCESS_KEY_ID'] = os.environ.get("AWS_ACCESS_KEY_ID")
 app.config['AWS_SECRET_ACCESS_KEY'] = os.environ.get("AWS_SECRET_ACCESS_KEY")
+app.config['MONGO_URI'] = os.environ.get('MONGODB_URI')
 
 mongo = PyMongo(app)
 jwt = JWTManager(app)
@@ -31,10 +31,10 @@ def create_app():
     
     # set app config
     app.config.from_object(env_config)
-
+    
+    mongo.init_app(app)
     jwt.init_app(app)
     bcrypt.init_app(app)
-    mongo.init_app(app)
     cors.init_app(app)
 
     # define and register blueprints

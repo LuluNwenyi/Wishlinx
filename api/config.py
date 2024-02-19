@@ -3,7 +3,6 @@
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-import cloudinary, cloudinary.api
 
 # configure environment variables to use .env file
 dotenv_path = Path('.env')
@@ -11,13 +10,6 @@ load_dotenv(dotenv_path=dotenv_path)
 
 # base config
 class Config():
-
-    SECRET_KEY = os.environ.get("SECRET_KEY")
-    SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT")
-    SES_REGION_NAME = os.environ.get("SES_REGION_NAME")
-    SES_EMAIL_SOURCE = os.environ.get("SES_EMAIL_SOURCE")
-    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 
     @staticmethod
     def init_app(app):
