@@ -1,0 +1,39 @@
+html {
+  font-size: calc(100vw / 390 * 10);
+
+  @media screen and (min-width: 768px) {
+    font-size: calc(100vw / 1440 * 10);
+  }
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+body {
+  font-size: 1.4rem;
+  font-family: $inter;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  -webkit-appearance: none;
+  width: 0;
+  height: 0;
+}
+
+input,
+button {
+  display: inline-block;
+  border: none;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+select {
+  appearance: none;
+}

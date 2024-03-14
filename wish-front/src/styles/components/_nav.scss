@@ -1,0 +1,147 @@
+.c-nav {
+  height: 6.4rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 0.1rem solid $alto;
+  background: #fff;
+
+  &-title {
+    @extend %center;
+    font-family: $clash-display;
+    padding: 0 7.6rem 0 2rem;
+    border-right: 0.1rem solid $alto;
+    height: 100%;
+
+    h1 {
+      @extend %title-28;
+
+      span {
+        color: $gray;
+      }
+    }
+
+    &--sml {
+      padding-left: 2rem;
+      padding-right: 1.2rem;
+    }
+  }
+
+  &-main {
+    width: 100%;
+    > * {
+      display: none;
+    }
+
+    &--auth {
+      display: flex;
+    }
+  }
+
+  &-lgn {
+    a {
+      @extend %center;
+      width: 100%;
+      height: 6.4rem;
+    }
+  }
+
+  &-ctrl {
+    height: 6.4rem;
+    padding-right: 4.6rem;
+    width: 100%;
+    justify-content: flex-end;
+
+    &-search,
+    &-link {
+      display: none;
+    }
+
+    &-pfl {
+      @extend %items-center;
+
+      svg {
+        width: 2.4rem;
+        height: 2.4rem;
+      }
+
+      > :not(:last-child) {
+        margin-right: 4.8rem;
+      }
+
+      &-image {
+        position: relative;
+        width: 3.6rem;
+        height: 3.6rem;
+        border-radius: 3.6rem;
+        background-color: $dove-gray;
+      }
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    &-title {
+      padding-left: 2.3rem;
+      padding-right: 3.6rem;
+    }
+
+    &-ctrl {
+      display: grid;
+      justify-content: flex-start;
+      grid-template-columns: 0.535fr 0.25fr 0.215fr;
+      padding-right: 0;
+
+      &-search,
+      &-link {
+        display: flex;
+        align-items: center;
+      }
+
+      &-search {
+        padding-left: 2rem;
+
+        input {
+          height: 100%;
+          width: 50%;
+          padding-left: 1.5rem;
+          font-size: 1.6rem;
+          letter-spacing: -0.08rem;
+
+          &::placeholder {
+            color: $dove-gray;
+          }
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+
+      &-link {
+        justify-content: space-between;
+        padding: 0 3.6rem 0 2.4rem;
+        border-right: 0.1rem solid $alto;
+        border-left: 0.1rem solid $alto;
+
+        > :not(:last-child) {
+          margin-right: 4.8rem;
+        }
+
+        &-item {
+          color: $dove-gray;
+          font-size: 1.7rem;
+          letter-spacing: -0.085rem;
+          transition: color 300ms $ease;
+
+          &--active,
+          &:hover {
+            color: $cod-gray;
+          }
+        }
+      }
+
+      &-pfl {
+        padding-left: 3.6rem;
+      }
+    }
+  }
+}

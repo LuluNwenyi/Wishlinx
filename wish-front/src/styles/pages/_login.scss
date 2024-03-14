@@ -1,0 +1,55 @@
+.s-auth {
+  margin-top: 3.6rem;
+  padding: 0 2rem;
+
+  &-title {
+    color: $cod-gray;
+    font-size: 2.8rem;
+    letter-spacing: -0.14rem;
+  }
+
+  &-desc {
+    margin-top: 0.4rem;
+    color: $mine-shaft;
+    font-size: 1.6rem;
+    letter-spacing: -0.08rem;
+  }
+
+  &-form {
+    margin-top: 3.6rem;
+
+    &-input {
+      margin-bottom: 2.4em;
+
+      > :not(:first-child) {
+        margin-top: 1.6rem;
+      }
+    }
+
+    &-btn {
+      height: 6.4rem;
+    }
+  }
+
+  &-ate {
+    display: none;
+  }
+
+  @media screen and (min-width: 768px) {
+    &-ate {
+      display: block;
+      margin-top: 4rem;
+      text-align: center;
+      color: $dove-gray;
+      font-size: 1.6rem;
+      letter-spacing: -0.08rem;
+
+      a {
+        margin-left: 0.8rem;
+        color: $cod-gray;
+        text-decoration: underline;
+        text-underline-offset: 0.375rem;
+      }
+    }
+  }
+}

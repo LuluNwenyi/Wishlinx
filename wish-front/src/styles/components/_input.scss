@@ -1,0 +1,77 @@
+.c-input {
+  height: 7rem;
+  display: block;
+  padding: 0 3rem;
+  width: 100%;
+  letter-spacing: -0.075rem;
+  font-size: 1.5rem;
+  background-color: inherit;
+  color: $cod-gray;
+  outline: none;
+
+  &-label {
+    color: $shark;
+    font-size: 1.5rem;
+    letter-spacing: -0.08rem;
+  }
+
+  &-wpr {
+    position: relative;
+    border: 0.1rem solid $alto;
+    background-color: $alabaster;
+
+    &--inline {
+      border: none !important;
+      background: none;
+
+      .c-input {
+        border: 0.1rem solid $alto;
+        background-color: $alabaster;
+        margin-top: 0.8rem;
+      }
+    }
+
+    select {
+      border: none;
+      padding: 0;
+      padding-left: 1.6rem;
+    }
+
+    svg {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 4.7rem;
+    }
+
+    .small + svg {
+      right: 1.6rem;
+    }
+
+    &--grid {
+      display: grid;
+      align-items: center;
+      grid-template-columns: minmax(auto, 7.1rem) auto;
+
+      .c-input-label{
+        @extend %center;
+        width: 7.1rem;
+        border-right: 0.1rem solid $alto;
+        height: 100%;
+      }
+
+       select  {
+        width: 7.1rem;
+
+       }
+    }
+  }
+
+  &::placeholder {
+    color: $dove-gray;
+  }
+
+  &-ctr {
+    position: relative;
+  }
+}

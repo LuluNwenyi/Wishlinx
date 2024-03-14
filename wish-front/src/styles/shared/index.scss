@@ -1,0 +1,16 @@
+%items-center {
+  display: flex;
+  align-items: center;
+}
+
+%center {
+  @extend %items-center;
+  justify-content: center;
+}
+
+%space-btw {
+  @extend %items-center;
+  justify-content: space-between;
+}
+
+

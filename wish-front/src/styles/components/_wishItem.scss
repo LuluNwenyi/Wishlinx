@@ -1,0 +1,48 @@
+.c-wh {
+  position: relative;
+
+  &-hdr {
+    &-image {
+      width: 100%;
+      height: 14.8rem;
+      background-color: $dove-gray;
+    }
+  }
+
+  &-title {
+    color: $cod-gray;
+    font-size: 1.7rem;
+    letter-spacing: -0.085rem;
+  }
+
+  &-dtl {
+    padding: 1.25rem 0.4rem 2.5rem 1.2rem;
+    border-left: 0.1rem solid $alto;
+    border-right: 0.1rem solid $alto;
+    border-bottom: 0.1rem solid $alto;
+  }
+
+  &-pre {
+    color: $gray-1;
+    font-size: 1.4rem;
+    letter-spacing: -0.07rem;
+    margin-top: 0.4rem;
+  }
+
+  &-cld {
+    position: absolute;
+    display: flex;
+    top: 1.11rem;
+    right: -1.5rem;
+    height: 1.8rem;
+    width: 9.6rem;
+    justify-content: center;
+    background-color: $cod-gray-4;
+    color: $white;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: -0.042rem;
+    transform: rotate(21.953deg);
+  }
+}

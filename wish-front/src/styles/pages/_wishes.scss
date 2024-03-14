@@ -1,0 +1,43 @@
+.wl {
+  &-grid {
+    margin-top: 1.6rem;
+    padding-bottom: 6rem;
+
+    > :first-child {
+      margin-bottom: 1.2rem !important;
+    }
+
+    > :not(:last-child),
+    > :not(:first-child) {
+      margin-bottom: -0.05rem;
+    }
+
+    &-btn {
+      height: 6.4rem;
+      color: $black;
+      border: 0.1rem solid $alto;
+      background: $alabaster;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    &-grid {
+      display: grid;
+      gap: 3.6rem 2.4rem;
+      grid-template-columns: repeat(4, auto);
+
+      > :first-child {
+        margin-bottom: 0;
+      }
+
+      &-btn {
+        height: 100%;
+      }
+
+      > :not(:last-child),
+      > :not(:first-child) {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

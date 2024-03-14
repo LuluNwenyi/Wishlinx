@@ -1,0 +1,44 @@
+%link {
+  @extend %items-center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  border: 0.1rem solid $black;
+  font-size: 1.5rem;
+  font-weight: 500;
+  width: 100%;
+  letter-spacing: 0.15rem;
+
+  svg {
+    margin-left: 1rem;
+  }
+}
+
+%link-bg--black {
+  @extend %link;
+  background-color: $black;
+  color: $white;
+
+  svg path {
+    fill: $white;
+  }
+}
+
+%link-bg--white {
+  @extend %link;
+  background-color: $white;
+  color: $black;
+}
+
+.hide-on-dkp {
+  @media screen and (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+
+.hide-on-mb {
+  @media screen and (max-width: 767px) {
+    display: none !important;
+  }
+}
+

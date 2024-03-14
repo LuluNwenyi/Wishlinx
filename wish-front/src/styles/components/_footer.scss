@@ -1,0 +1,84 @@
+.ftr {
+  @extend %center;
+  min-height: 8rem;
+  border-top: 0.1rem solid $gallery;
+  background-color: $white;
+
+  p {
+    @extend %description-16;
+    color: $cod-gray;
+    text-align: center;
+  }
+}
+
+.hm-acrs {
+  padding: 0 3.1rem;
+  display: flex;
+  flex-direction: column;
+  color: $cod-gray;
+  background-color: $white;
+  margin-bottom: 7.1rem;
+
+  &-form {
+    max-width: 50.5rem;
+    margin-top: 4.8rem;
+
+    &-caption {
+      @extend %description-14;
+    }
+
+    &-title {
+      @extend %title-32;
+      margin: 1.2rem 0;
+    }
+
+    &-desc {
+      @extend %description-16;
+      margin-bottom: 3.6rem;
+    }
+
+    &-input {
+      display: block;
+      font-size: 1.5rem;
+      letter-spacing: -0.045rem;
+      padding: 1.9rem 2.2rem 1.9rem 2.4rem;
+      line-height: 1.6;
+      border: 0.1rem solid $alto;
+      background: $alabaster;
+      width: 100%;
+
+      &:last-of-type {
+        margin-top: 1.6rem;
+      }
+    }
+
+    &-btn {
+      @extend %description-15;
+      display: block;
+      width: 100%;
+      padding: 2.2rem 1rem;
+      margin-top: 2.4rem;
+      color: $white;
+      background-color: $cod-gray;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    padding-left: 9rem;
+    padding-right: 0;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-bottom: 0;
+
+    &-form {
+      margin-top: 9.9rem;
+    }
+
+    &-image {
+      width: 100%;
+      height: 59rem;
+      max-width: 70.2rem;
+      background-color: $mine-shaft;
+    }
+  }
+}

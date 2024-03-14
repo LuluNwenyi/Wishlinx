@@ -1,0 +1,13 @@
+.half_inputs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.8rem;
+
+  input {
+    padding-right: 1.5rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    gap: 3.6rem;
+  }
+}

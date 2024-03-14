@@ -1,0 +1,50 @@
+.c-clm {
+  @extend %space-btw;
+  padding: 1.2rem 0 1.2rem 0.8rem;
+  border-bottom: 0.1rem solid $alto;
+
+  svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-right: 0.8rem;
+  }
+
+  &-hdr {
+    @extend %items-center;
+  }
+
+  &-title {
+    font-size: 1.4rem;
+    color: $mine-shaft;
+    line-height: 3.2rem;
+    letter-spacing: -0.042rem;
+
+    &--dkp {
+      display: none;
+    }
+
+    &--uln {
+      color: inherit;
+      font-weight: 500;
+      text-underline-offset: 0.375rem;
+      text-decoration-line: underline;
+    }
+
+    @media screen and (min-width: 768px) {
+      &--dkp {
+        display: inline;
+      }
+
+      &--bld {
+        color: $cod-gray;
+        font-weight: 500;
+      }
+    }
+  }
+
+  &-time {
+    color: $mine-shaft;
+    font-size: 1.2rem;
+    letter-spacing: -0.036rem;
+  }
+}

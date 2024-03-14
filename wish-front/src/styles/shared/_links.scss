@@ -1,0 +1,39 @@
+%link {
+  @extend %items-center;
+  justify-content: center;
+  color: $cod-gray;
+  font-size: 1.7rem;
+  letter-spacing: -0.085rem;
+  padding: 1rem;
+  width: 100%;
+
+  svg {
+    margin-left: 0.4rem;
+  }
+}
+
+%link-bg--black {
+  @extend %link;
+  background-color: $cod-gray;
+  color: $white;
+
+  svg path {
+    fill: $white;
+  }
+}
+
+%link-bg--white {
+  @extend %link;
+  background-color: $white;
+  color: $black;
+}
+
+%link--outlined {
+  @extend %link;
+  border: 0.1rem solid $dove-gray;
+}
+
+%link--bg {
+  @extend %link;
+  border: 0.1rem solid $dove-gray;
+}

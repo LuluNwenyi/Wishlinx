@@ -1,0 +1,163 @@
+.clm {
+  &-ci {
+    @extend %center;
+    flex-direction: column;
+    width: 100%;
+    max-width: 39.6rem;
+    height: 30rem;
+    border: 0.1rem solid $alto;
+    background: $alabaster;
+
+    &-title {
+      color: $cod-gray;
+      text-align: center;
+      font-size: 8rem;
+      line-height: 9.7rem;
+    }
+
+    &-text {
+      color: $mine-shaft;
+      font-size: 2.4rem;
+      letter-spacing: -0.12rem;
+    }
+  }
+
+  &-grid {
+    margin-top: 2.4rem;
+    display: grid;
+    grid-template-columns: 0.4fr 0.6fr;
+
+    &-right {
+      border-top: 0.1rem solid $alto;
+    }
+  }
+
+  &-cd {
+    @extend %items-center;
+    justify-content: space-between;
+    padding: 1.75rem 4.6rem 1.75rem 0;
+    border-bottom: 0.1rem solid $alto;
+
+    &-hdr {
+      display: flex;
+
+      svg {
+        width: 2.4rem;
+        height: 2.4rem;
+        margin-right: 1.6rem;
+      }
+    }
+
+    &-title {
+      font-size: 1.4rem;
+      color: $mine-shaft;
+      letter-spacing: -0.042rem;
+
+      &--md {
+        font-weight: 500;
+      }
+
+      &--bld {
+        font-weight: 600;
+      }
+    }
+
+    &-desc {
+      margin-top: 0.88rem;
+    }
+  }
+}
+
+.s-clm {
+  margin-top: 3.6rem;
+  padding-bottom: 9.4rem;
+  border-bottom: 0.1rem solid $alto;
+
+  &-form {
+    width: 100%;
+    max-width: 61.2rem;
+    &-title {
+      margin-bottom: 2.8rem;
+    }
+
+    &-input {
+      > :not(:first-child) {
+        margin-top: 2.8rem;
+      }
+    }
+  }
+
+  &-right {
+    width: 100%;
+    max-width: 50.4rem;
+    margin-top: 4.8rem;
+  }
+
+  &-dtl {
+    &-hdr {
+      font-size: 1.8rem;
+      letter-spacing: -0.09rem;
+      margin-bottom: 1.6rem;
+    }
+
+    &-main {
+      display: flex;
+
+      &-image {
+        min-width: 12.8rem;
+        min-height: 12.8rem;
+        background: $deep-blush;
+        margin-right: 1.3rem;
+      }
+      &-title {
+        color: $cod-gray;
+        font-size: 2.4rem;
+        letter-spacing: -0.12rem;
+        line-height: 1.42;
+      }
+
+      &-desc {
+        color: $gray-1;
+        font-size: 1.8rem;
+        letter-spacing: -0.09rem;
+        margin-top: 0.4rem;
+        height: 100%;
+        max-height: 6.6rem;
+      }
+
+      &-tag {
+        color: $shark;
+        font-size: 1.8rem;
+        letter-spacing: -0.09rem;
+      }
+
+      &-link {
+        @extend %link--outlined;
+        height: 6.4rem;
+        margin-top: 2.8rem;
+
+        svg path {
+          fill: $black;
+        }
+      }
+    }
+  }
+
+  &-ls {
+    margin-top: 3.6rem !important;
+    &-title {
+      font-size: 2rem;
+      letter-spacing: -0.1rem;
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+
+    &-right {
+      margin-top: 0;
+    }
+  }
+}

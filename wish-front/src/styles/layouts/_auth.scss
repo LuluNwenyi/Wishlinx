@@ -1,0 +1,31 @@
+.auth {
+  height: 100%;
+
+  &-image {
+    background: $alabaster-1;
+    height: 100%;
+  }
+
+  &-main {
+    display: grid;
+
+    &-cnt {
+      > * {
+        max-width: 49.6rem;
+        margin: auto;
+      }
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    &-main {
+      grid-template-columns: 0.4125fr 0.5875fr;
+      align-items: center;
+      height: 100%;
+    }
+
+    &-nav {
+      display: none;
+    }
+  }
+}
