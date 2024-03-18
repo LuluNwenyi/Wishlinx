@@ -2,37 +2,34 @@
 # ------- #
 import os
 from flask import Flask
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 from .config import env_config
-from flask_pymongo import PyMongo
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 
 # app config
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-app.config['SECURITY_PASSWORD_SALT'] = os.environ.get("SECURITY_PASSWORD_SALT")
-app.config['SES_REGION_NAME'] = os.environ.get("SES_REGION_NAME")
-app.config['SES_EMAIL_SOURCE'] = os.environ.get("SES_EMAIL_SOURCE")
-app.config['AWS_ACCESS_KEY_ID'] = os.environ.get("AWS_ACCESS_KEY_ID")
-app.config['AWS_SECRET_ACCESS_KEY'] = os.environ.get("AWS_SECRET_ACCESS_KEY")
-app.config['MONGO_URI'] = os.environ.get('MONGODB_URI')
 
-mongo = PyMongo(app)
+uri = os.environ.get("MONGO_URI")
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+#mongo = pymongo(app)
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 cors = CORS(app)
 
 # database config
-db = mongo.db
+db = client.db
 
 # app factory
 def create_app():
     
     # set app config
     app.config.from_object(env_config)
-    
-    mongo.init_app(app)
+   
+    #mongo.init_app(app)
     jwt.init_app(app)
     bcrypt.init_app(app)
     cors.init_app(app)
