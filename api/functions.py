@@ -12,12 +12,12 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'} # allowed file extensions for upload
 def send_email(app, recipients, subject, text, sender):
     ses = boto3.client(
         'ses',
-        region_name=app.config['SES_REGION_NAME'],
-        aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
-        aws_secret_access_key=app.config['AWS_SECRET_ACCESS_KEY']
+        region_name=os.environ.get('SES_REGION_NAME'),
+        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
     )
     if not sender:
-        sender = app.config['SES_EMAIL_SOURCE']
+        sender = os.environ.get('SES_EMAIL_SOURCE')
 
     ses.send_email(
         Source=sender,
