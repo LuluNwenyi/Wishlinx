@@ -1,6 +1,6 @@
 # imports #
 # ------- #
-import os, ssl
+import os
 from flask import Flask
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
@@ -13,7 +13,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 uri = os.environ.get("MONGO_URI")
-client = MongoClient(uri, server_api=ServerApi('1'), ssl_cert_reqs=ssl.CERT_NONE)
+client = MongoClient(uri, server_api=ServerApi('1'))
 
 app.config["JWT_SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
