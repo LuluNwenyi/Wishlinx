@@ -28,9 +28,9 @@ def create_admin():
             
             # check if username is taken
             existing_user_username = user_collection.find_one({"username": username})
-            existing_admin_username = user_collection.find_one({"username": username})
+            #existing_admin_username = user_collection.find_one({"username": username})
             
-            if existing_admin_username or existing_user_username is not None:
+            if existing_user_username is not None:
                 return jsonify({"message": "This username is already taken."}), 409
             
             else:
@@ -46,8 +46,7 @@ def create_admin():
                                         "created_at": datetime.datetime.utcnow(),
                                         "confirmed_at": None,
                                         "last_login": datetime.datetime.utcnow()
-                })
-                
+                })      
                 generate_confirmation_token(email=email)
                 return jsonify({"message": "This admin has been created successfully, and a confirmation email has been sent."}), 201
             

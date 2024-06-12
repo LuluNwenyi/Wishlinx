@@ -15,6 +15,8 @@ app = Flask(__name__)
 uri = os.environ.get("MONGO_URI")
 client = MongoClient(uri, server_api=ServerApi('1'))
 
+app.config["JWT_SECRET_KEY"] = os.environ.get("SECRET_KEY")
+
 #mongo = pymongo(app)
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
