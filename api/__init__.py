@@ -13,7 +13,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 uri = os.environ.get("MONGO_URI")
-client = MongoClient(uri, server_api=ServerApi('1'))
+client = MongoClient(uri, server_api=ServerApi('1'), tls=True)
 
 app.config["JWT_SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
