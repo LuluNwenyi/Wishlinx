@@ -91,7 +91,7 @@ def test_protection():
     return jsonify(response), 200
 
 # confirm email
-@auth.route("/confirm_email/<token>", methods=["PATCH"])
+@auth.route("/confirm_email/<token>", methods=["GET", "PATCH"])
 def confirm_email(token):
 
     ts = URLSafeTimedSerializer(os.environ.get('SECRET_KEY'))
