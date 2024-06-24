@@ -37,7 +37,7 @@ const Button = ({
         )
       ) : (
         <>
-          {icon}
+          {icon && icon}
           <span>{text}</span>
         </>
       )}

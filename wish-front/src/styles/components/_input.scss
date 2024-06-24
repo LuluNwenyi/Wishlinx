@@ -7,6 +7,7 @@
   font-size: 1.5rem;
   background-color: inherit;
   color: $cod-gray;
+  border: 0.1rem solid $alto;
   outline: none;
 
   &-label {
@@ -41,6 +42,8 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
+      pointer-events: none;
+      user-select: none;
       right: 4.7rem;
     }
 
@@ -53,17 +56,16 @@
       align-items: center;
       grid-template-columns: minmax(auto, 7.1rem) auto;
 
-      .c-input-label{
+      .c-input-label {
         @extend %center;
         width: 7.1rem;
         border-right: 0.1rem solid $alto;
         height: 100%;
       }
 
-       select  {
+      select {
         width: 7.1rem;
-
-       }
+      }
     }
   }
 

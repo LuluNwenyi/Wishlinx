@@ -10,9 +10,9 @@ import SelectInput from "@/src/components/input/SelectInput";
 import UploadSvg from "@/src/components/svgs/UploadSvg";
 
 const schema = yupObject().shape({
-  item: yupString().required("Enter"),
-  description: yupString().required("Enter"),
-  wishlist: yupObject().required("Enter"),
+  item: yupString().required("Enter name of item"),
+  description: yupString().required("Enter description"),
+  wishlist: yupObject().required("Select a list"),
   link: yupString().required("Enter"),
   quantity: yupString().required("Enter"),
   currency: yupString().required("Enter"),
@@ -118,7 +118,13 @@ const Index = () => {
                     extraClass="ls-form-btn"
                   />
                 </div>
-                <div className="ls-form-right">
+                <label id="upload_image" className="ls-form-right">
+                  <input
+                    type="file"
+                    hidden
+                    name="upload_image"
+                    id="upload_image"
+                  />
                   <UploadSvg />
                   <div>
                     <p>
@@ -126,7 +132,7 @@ const Index = () => {
                     </p>
                     <p>Supported formats: jpg, png.</p>
                   </div>
-                </div>
+                </label>
               </form>
             </div>
           </section>
