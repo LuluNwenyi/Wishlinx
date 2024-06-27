@@ -146,7 +146,7 @@ def forgot_password():
 
 
 # reset password
-@auth.route('/reset/<token>', methods=['PATCH'])
+@auth.route('/reset/<token>', methods=['GET', 'PATCH'])
 def reset_password(token):
 
     ts = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
