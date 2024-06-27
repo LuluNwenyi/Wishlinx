@@ -124,8 +124,8 @@ def forgot_password():
         user_name = str(user['name'])
 
         subject = "Reset Your Password"
-        ts = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
-        token = ts.dumps(email, salt=current_app.config["SECURITY_PASSWORD_SALT"])
+        ts = URLSafeTimedSerializer(os.environ.get("SECRET_KEY"))
+        token = ts.dumps(email, salt=os.environ.get("SECURITY_PASSWORD_SALT"))
         recovery_url = url_for("auth.reset_password", token=token,  _external=True)
         body = f"Hi {user_name}," + \
                 f"Reset your password by clicking on the link: {recovery_url} " + \
