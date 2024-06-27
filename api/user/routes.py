@@ -145,7 +145,7 @@ def get_user():
         user_data["name"] = str(user['name'])
         user_data["username"] = str(user['username'])
         user_data["email"] = str(user['email'])
-        user_data["image"] = str(user['image'])
+        #user_data["image"] = str(user['image'])
                 
         return jsonify(user_data), 200
     else:
