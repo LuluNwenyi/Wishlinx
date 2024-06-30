@@ -52,7 +52,7 @@ def get_lists():
     
     if user:
         # check for lists that belong to the user
-        user_list = list_collection.find({"user_id": user_id})
+        user_list = list_collection.find({"user_id": str(user['_id'])})
         if user_list:
             # return list data
             #all_lists = list_collection.find({})
@@ -70,12 +70,11 @@ def get_lists():
                 list_data["wishes"] = user_list['wishes']
                                     
                 lists.append(list_data) 
-                return lists, 200
+                return jsonify(lists), 200
         else:
             return jsonify({"message": "You do not own any lists."}), 404
-    
     else:
-        return jsonify({"message": "This user does not exist."}), 404\
+        return jsonify({"message": "This user does not exist."}), 404
 
 # get a list
 @lists.route('/list/<id>', methods=['GET'])
