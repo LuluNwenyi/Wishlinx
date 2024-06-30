@@ -51,6 +51,7 @@ def create_wish(list_id):
                     "quantity": quantity,
                     "amount": amount,
                     "currency": currency,
+                    "img": None,
                     "created_at": datetime.datetime.utcnow(),
                     "last_modified": datetime.datetime.utcnow()
                     }
@@ -134,7 +135,7 @@ def get_wishes(list_id):
         
                 wishes.append(wish_data)
                 
-            return jsonify(wishes), 200
+            return wishes, 200
         
         else:
             return jsonify({"message": "This list does not exist or is not owned by this user."}), 404
@@ -170,9 +171,9 @@ def get_wish(list_id, wish_id):
                 wish_data["amount"] = str(wish['amount'])
                 wish_data["currency"] = str(wish['currency'])
                 wish_data["wish_list"] = str(wish['wish_list'])
-                wish_data["image"] = str(wish['image'])
+                wish_data["image"] = wish['image']
                 
-                return jsonify(wish_data), 200
+                return wish_data, 200
             
             else:
                 return jsonify({"message": "This wish does not exist."}), 404
