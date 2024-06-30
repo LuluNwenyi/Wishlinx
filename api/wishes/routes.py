@@ -37,7 +37,6 @@ def create_wish(list_id):
                 description = request.json['description']
                 wish_list = user_list['_id']
                 link = request.json['link']
-                status = request.json['status']
                 quantity = request.json['quantity']
                 amount = request.json['amount']
                 currency = request.json['currency']
@@ -48,7 +47,7 @@ def create_wish(list_id):
                     "description": description,
                     "wish_list": wish_list,
                     "link": link,
-                    "status": status,
+                    "status": "unclaimed",
                     "quantity": quantity,
                     "amount": amount,
                     "currency": currency,
