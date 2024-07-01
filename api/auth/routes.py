@@ -24,7 +24,7 @@ def login_user():
 
             user_id = str(existing_user['_id'])
 
-            token = create_access_token(identity=user_id, fresh=True, expires_delta=timedelta(minutes=30))
+            token = create_access_token(identity=user_id, fresh=True, expires_delta=timedelta(minutes=60))
             refresh_token = create_refresh_token(identity=user_id, expires_delta=timedelta(hours=1))
             login_time = datetime.datetime.now()
             db.users.update_one({"_id": existing_user['_id']}, {"$set": {"last_login": login_time}})
