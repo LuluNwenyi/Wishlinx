@@ -90,7 +90,7 @@ def get_claims():
     
     if user:
         # check for wishes that have been claimed
-        claimed_wishes = wish_collection.find({"user_id":user_id, "status": "claimed"})
+        claimed_wishes = wish_collection.find({"user_id":ObjectId(user_id), "status": "claimed"})
         claims = []
         
         for wish in claimed_wishes:
@@ -112,7 +112,7 @@ def get_claim(claim_id):
     
     if user:
         # check if claim exists
-        claim = wish_collection.find_one({"user_id":user_id, "claim.id": claim_id})
+        claim = wish_collection.find_one({"user_id":ObjectId(user_id), "claim.id": claim_id})
         
         if claim:
             return jsonify({"claim": claim['claim']}), 200
@@ -132,7 +132,7 @@ def total_claims():
     
     if user:
     # calculate total number of wishes
-        claimed_wishes = list(wish_collection.find({"user_id": user_id, 
+        claimed_wishes = list(wish_collection.find({"user_id": ObjectId(user_id), 
                                                    "status": "claimed"}))
         claims = []
         for wish in claimed_wishes:
