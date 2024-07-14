@@ -70,7 +70,7 @@ def get_lists():
                 list_data["wishes"] = user_list['wishes']
                                     
                 lists.append(list_data) 
-                return jsonify(lists), 200
+            return jsonify(lists), 200
         else:
             return jsonify({"message": "You do not own any lists."}), 404
     else:
