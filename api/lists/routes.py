@@ -51,13 +51,13 @@ def get_lists():
 
     if user:
         # check for lists that belong to the user
-        user_lists = list_collection.find({"user_id": str(ObjectId(user_id))})
+        user_lists = list_collection.find({"user_id": ObjectId(user_id)})
         
         wishlists = []
         for each_list in user_lists:
             list_data = {}
             list_data["id"] = str(each_list['_id'])
-            list_data["user_id"] = each_list['user_id']
+            list_data["user_id"] = str(each_list['user_id'])
             list_data["title"] = str(each_list['title'])
             list_data["description"] = str(each_list['description'])
             list_data["category"] = str(each_list['category'])
