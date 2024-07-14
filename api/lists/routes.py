@@ -24,7 +24,7 @@ def create_list():
             category = request.json['category']
             
             list_collection.insert_one({
-                                        "user_id": str(user['_id']),
+                                        "user_id": ObjectId(user_id),
                                         "title": title,
                                         "description": description,
                                         "category": category,
@@ -46,33 +46,29 @@ def create_list():
 @lists.route('/lists', methods=['GET'])
 @jwt_required()
 def get_lists():
-    # check if user exists
     user_id = get_jwt_identity()
     user = user_collection.find_one({"_id": ObjectId(user_id)})
-    
+
     if user:
         # check for lists that belong to the user
-        user_list = list_collection.find({"user_id": ObjectId(user_id)})
-        if user_list:
-            # return list data
-            #all_lists = list_collection.find({})
-            wishlists = []
-                
-            for each_list in user_list:
-                list_data = {}
-                list_data["id"] = str(each_list['_id'])
-                list_data["user_id"] = str(each_list['user_id'])
-                list_data["title"] = each_list['title']
-                list_data["description"] = each_list['description']
-                list_data["category"] = each_list['category']
-                list_data["expiry_date"] = each_list['expiry_date']
-                list_data["display_hex_code"] = each_list['display_hex_code']
-                list_data["wishes"] = each_list['wishes']
-                                    
-                wishlists.append(list_data) 
-                
-            return jsonify(wishlists), 200
+        user_lists = list_collection.find({"user_id": str(ObjectId(user_id))})
         
+        wishlists = []
+        for each_list in user_lists:
+            list_data = {}
+            list_data["id"] = str(each_list['_id'])
+            list_data["user_id"] = each_list['user_id']
+            list_data["title"] = str(each_list['title'])
+            list_data["description"] = str(each_list['description'])
+            list_data["category"] = str(each_list['category'])
+            list_data["expiry_date"] = str(each_list['expiry_date'])
+            list_data["display_hex_code"] = str(each_list['display_hex_code'])
+            list_data["wishes"] = each_list['wishes']
+
+            wishlists.append(list_data)
+        
+        if wishlists:
+            return jsonify(wishlists), 200
         else:
             return jsonify({"message": "You do not own any lists."}), 404
     else:

@@ -42,7 +42,7 @@ def create_wish(list_id):
                 currency = request.json['currency']
                 
                 new_wish = {
-                    "user_id": str(user['_id']),
+                    "user_id": ObjectId(user_id),
                     "item": item,
                     "description": description,
                     "wish_list": wish_list,
