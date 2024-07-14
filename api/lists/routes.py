@@ -52,7 +52,7 @@ def get_lists():
     
     if user:
         # check for lists that belong to the user
-        user_list = list_collection.find({"user_id": str(user['_id'])})
+        user_list = list_collection.find({"user_id": ObjectId(user_id)})
         if user_list:
             # return list data
             #all_lists = list_collection.find({})
