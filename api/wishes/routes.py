@@ -113,7 +113,7 @@ def get_wishes(list_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": ObjectId(user_id)})
         
         if user_list:
             # retrieve all wishes in that list
@@ -152,7 +152,7 @@ def get_wish(list_id, wish_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": ObjectId(user_id)})
         
         if user_list:
             # check if wish exists
@@ -193,7 +193,7 @@ def update_wish(list_id, wish_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": ObjectId(user_id)})
         
         if user_list:
             # check if wish exists
@@ -251,7 +251,7 @@ def delete_wish(list_id, wish_id):
     
     if user:
         # check if list exists
-        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(list_id), "user_id": ObjectId(user_id)})
         
         if user_list:
             # check if wish exists
@@ -283,7 +283,7 @@ def total_wishes():
     
     if user:
     # calculate total number of wishes
-        wish_list = list(wish_collection.find({"user_id": user_id}))
+        wish_list = list(wish_collection.find({"user_id": ObjectId(user_id)}))
         wishes = []
         for wish in wish_list:
             wish_data = {}
