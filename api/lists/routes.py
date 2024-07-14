@@ -56,7 +56,7 @@ def get_lists():
         if user_list:
             # return list data
             #all_lists = list_collection.find({})
-            lists = []
+            wishlists = []
                 
             for user_list in user_list:
                 list_data = {}
@@ -69,7 +69,8 @@ def get_lists():
                 list_data["display_hex_code"] = user_list['display_hex_code']
                 list_data["wishes"] = user_list['wishes']
                                     
-                lists.append(list_data) 
+                wishlists.append(list_data) 
+                
             return jsonify(lists), 200
         else:
             return jsonify({"message": "You do not own any lists."}), 404
