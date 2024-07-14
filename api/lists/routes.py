@@ -115,7 +115,7 @@ def update_list(id):
 
     if user:
         # check if list exists and that it belongs to the user
-        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": ObjectId(user_id)})
         
         if user_list:
             try:
@@ -148,7 +148,7 @@ def delete_list(id):
 
     if user:
         # check if list exists and that it belongs to the user
-        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": ObjectId(user_id)})
                 
         if user_list:
             length_check = list_collection.find_one({"wishes": {"$size": 0}})
@@ -174,7 +174,7 @@ def update_list_expiry_date(id):
 
     if user:
         # check if list exists and that it belongs to the user
-        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": ObjectId(user_id)})
         
         if user_list:
             try:
