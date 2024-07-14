@@ -84,7 +84,7 @@ def get_list(id):
     
     if user:
         # check if list exists and that it belongs to the user
-        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": user_id})
+        user_list = list_collection.find_one({"_id": ObjectId(id), "user_id": ObjectId(user_id)})
         # return list data
         if user_list:
             list_data = {}
