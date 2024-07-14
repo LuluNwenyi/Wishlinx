@@ -58,20 +58,21 @@ def get_lists():
             #all_lists = list_collection.find({})
             wishlists = []
                 
-            for user_list in user_list:
+            for each_list in user_list:
                 list_data = {}
-                list_data["id"] = str(user_list['_id'])
-                list_data["user_id"] = str(user_list['user_id'])
-                list_data["title"] = user_list['title']
-                list_data["description"] = user_list['description']
-                list_data["category"] = user_list['category']
-                list_data["expiry_date"] = user_list['expiry_date']
-                list_data["display_hex_code"] = user_list['display_hex_code']
-                list_data["wishes"] = user_list['wishes']
+                list_data["id"] = str(each_list['_id'])
+                list_data["user_id"] = str(each_list['user_id'])
+                list_data["title"] = each_list['title']
+                list_data["description"] = each_list['description']
+                list_data["category"] = each_list['category']
+                list_data["expiry_date"] = each_list['expiry_date']
+                list_data["display_hex_code"] = each_list['display_hex_code']
+                list_data["wishes"] = each_list['wishes']
                                     
                 wishlists.append(list_data) 
                 
             return jsonify(wishlists), 200
+        
         else:
             return jsonify({"message": "You do not own any lists."}), 404
     else:
