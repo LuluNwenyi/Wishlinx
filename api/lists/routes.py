@@ -90,12 +90,12 @@ def get_list(id):
             list_data = {}
             list_data["id"] = str(user_list['_id'])
             list_data["user_id"] = str(user_list['user_id'])
-            list_data["title"] = user_list['title']
-            list_data["description"] = user_list['description']
-            list_data["category"] = user_list['category']
-            list_data["expiry_date"] = user_list['expiry_date']
-            list_data["display_hex_code"] = user_list['display_hex_code']
-            list_data["wishes"] = user_list['wishes']
+            list_data["title"] = str(user_list['title'])
+            list_data["description"] = str(user_list['description'])
+            list_data["category"] = str(user_list['category'])
+            list_data["expiry_date"] = str(user_list['expiry_date'])
+            list_data["display_hex_code"] = (user_list['display_hex_code'])
+            list_data["wishes"] = str(user_list['wishes'])
             
             return jsonify(list_data), 200
         else:
