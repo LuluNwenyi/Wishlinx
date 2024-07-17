@@ -63,7 +63,7 @@ def get_lists():
             list_data["category"] = str(each_list['category'])
             list_data["expiry_date"] = str(each_list['expiry_date'])
             list_data["display_hex_code"] = str(each_list['display_hex_code'])
-            list_data["wishes"] = each_list['wishes']
+            list_data["wishes"] = str(each_list['wishes'])
 
             wishlists.append(list_data)
         
