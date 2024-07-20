@@ -22,13 +22,14 @@ def create_list():
             title = request.json['title']
             description = request.json['description']
             category = request.json['category']
+            expiry_date = request.json['expiry_name']
             
             list_collection.insert_one({
                                         "user_id": ObjectId(user_id),
                                         "title": title,
                                         "description": description,
                                         "category": category,
-                                        "expiry_date": None,
+                                        "expiry_date": expiry_date,
                                         "created_at": datetime.datetime.utcnow(),
                                         "last_modified": datetime.datetime.utcnow(),
                                         "wishes": [],

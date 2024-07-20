@@ -6,7 +6,7 @@ from api import bcrypt
 from bson import ObjectId
 from datetime import timedelta
 from api.decorators import admin_required
-from api.collections import user_collection
+from api.collections import user_collection, list_collection,wish_collection
 from flask_jwt_extended import get_jwt_identity, jwt_required, create_access_token, create_refresh_token
 from api.functions import generate_confirmation_token, generate_public_id, allowed_file, send_email, s3_upload
 from flask_cors import cross_origin
@@ -208,14 +208,18 @@ def delete_user():
 
     user_id = get_jwt_identity() # retrieve user id from jwt token
     user = user_collection.find_one({"_id": ObjectId(user_id)}) # find user by id
+        
+    if not user:
+        return jsonify({"message": "User not found"}), 404
     
-    if user:
-        try:
-            user_collection.delete_one({"_id": ObjectId(user_id)})
-            return jsonify({"message": "User deleted successfully"}), 200
-        
-        except Exception as e:
-            return jsonify({"message": str(e)}), 500
-        
     else:
-        return jsonify({"message": "User not found"}), 404    
+        # Delete user
+        user_collection.delete_one({"_id": ObjectId(user_id)})
+        
+        # Delete all lists associated with the user
+        list_collection.delete_many({"user_id": ObjectId(user_id)})
+        
+        # Delete all wishes associated with the user
+        wish_collection.delete_many({"user_id": ObjectId(user_id)})
+        
+        return jsonify({"message": "User and all associated lists and wishes deleted successfully"}), 200   

@@ -271,7 +271,7 @@ def delete_wish(list_id, wish_id):
         
     else:
         return jsonify({"message": "This user does not exist."}), 404    
-    
+ 
 
 # total wishes
 @wish.route('/total-wishes', methods=['GET'])
