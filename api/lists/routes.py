@@ -22,7 +22,7 @@ def create_list():
             title = request.json['title']
             description = request.json['description']
             category = request.json['category']
-            expiry_date = request.json['expiry_name']
+            expiry_date = request.json['expiry_date']
             
             list_collection.insert_one({
                                         "user_id": ObjectId(user_id),
