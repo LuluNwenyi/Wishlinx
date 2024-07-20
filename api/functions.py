@@ -10,26 +10,36 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'} # allowed file extensions for upload
 
 # send email function
 def send_email(app, recipients, subject, text, sender):
-    ses = boto3.client(
-        'ses',
-        region_name=os.environ.get('SES_REGION_NAME'),
-        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
-    )
-    if not sender:
-        sender = os.environ.get('SES_EMAIL_SOURCE')
+    try:
+        ses = boto3.client(
+            'ses',
+            region_name=os.environ.get('SES_REGION_NAME'),
+            aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+        )
+        
+        if not sender:
+            sender = os.environ.get('SES_EMAIL_SOURCE')
 
-    ses.send_email(
-        Source=sender,
-        Destination={'ToAddresses': recipients},
-        Message={
-            'Subject': {'Data': subject},
-            'Body': {
-                'Text': {'Data': text}
-                #'Html': {'Data': html}
+        response = ses.send_email(
+            Source=sender,
+            Destination={'ToAddresses': recipients},
+            Message={
+                'Subject': {'Data': subject},
+                'Body': {
+                    'Text': {'Data': text}
+                    #'Html': {'Data': html}
+                }
             }
-        }
-    )
+        )
+        
+        # Return True if email was sent successfully
+        return response
+
+    except Exception as e:
+        # Log the exception or handle it as per your application's requirements
+        print(f"Error sending email: {e}")
+        return False
     
 # check file extension
 def allowed_file(filename):

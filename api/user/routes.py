@@ -4,9 +4,10 @@ import datetime, os
 from flask import Blueprint, jsonify, request, url_for, current_app
 from api import bcrypt
 from bson import ObjectId
+from datetime import timedelta
 from api.decorators import admin_required
 from api.collections import user_collection
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required, create_access_token, create_refresh_token
 from api.functions import generate_confirmation_token, generate_public_id, allowed_file, send_email, s3_upload
 from flask_cors import cross_origin
 
@@ -35,21 +36,7 @@ def create_user():
                 return jsonify({"message": "This username is already taken."}), 409
             
             else:
-                # register the user
-                user_collection.insert_one({
-                                        "name": name,
-                                        "email": email,
-                                        "username": username,
-                                        "password": password,
-                                        "public_id": generate_public_id(),
-                                        "admin": False,
-                                        "confirmed_email": False,
-                                        "created_at": datetime.datetime.utcnow(),
-                                        "confirmed_at": None,
-                                        "last_login": datetime.datetime.utcnow()
-                })
-                
-                # generate confirmation token and send confirmation email
+                # generate confirmation token
                 token = generate_confirmation_token(email=email)
                 
                 subject = "Confirm your e-mail address"
@@ -58,16 +45,46 @@ def create_user():
                 f"Please confirm your email address by clicking on the link: {confirm_url} " + \
                 f"If you didn't ask sign up on Wishlinx, ignore this mail."
                 
-                send_email(
-                    current_app,
-                    recipients=[email],
-                    subject=subject,
-                    text=body,
-                    sender=os.environ.get('SES_EMAIL_SOURCE')
-                )
+                try: 
+                    email_sender=send_email(
+                        current_app,
+                        recipients=[email],
+                        subject=subject,
+                        text=body,
+                        sender=os.environ.get('SES_EMAIL_SOURCE')
+                    )
+                except Exception as e:
+                    return jsonify({"message": "Failed to send confirmation email. User data not saved."}), 500
                 
-                #print("confirmation sent")
-                return jsonify({"message": "This user has been created successfully, and a confirmation email has been sent."}), 201
+                print(email_sender)
+                if email_sender['ResponseMetadata']['HTTPStatusCode']==200:           
+                    # save user data after email is sent successfully
+                    user = user_collection.insert_one({
+                                            "name": name,
+                                            "email": email,
+                                            "username": username,
+                                            "password": password,
+                                            "public_id": generate_public_id(),
+                                            "admin": False,
+                                            "confirmed_email": False,
+                                            "created_at": datetime.datetime.utcnow(),
+                                            "confirmed_at": None,
+                                            "last_login": datetime.datetime.utcnow()
+                    })
+                    
+                    user_id = str(user.inserted_id)
+                    
+                    # generate login and refresh tokens
+                    login_token = create_access_token(identity=user_id, fresh=True, expires_delta=timedelta(days=7))
+                    refresh_token = create_refresh_token(identity=user_id, expires_delta=timedelta(days=7))
+                    
+                    return jsonify({
+                        "message": "This user has been created successfully, and a confirmation email has been sent.",
+                        "login_token": login_token,
+                        "refresh_token": refresh_token
+                    }), 201
+                else:
+                    return jsonify({"message": "Confirmation email was not sent."})
                         
         except Exception as e:
             return jsonify({"message": str(e)}), 500
