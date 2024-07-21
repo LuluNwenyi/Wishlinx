@@ -16,7 +16,7 @@ def user_public_profile(username):
         if user:
             user_id = str(user['_id'])  # get the user id for filtering
             # calculate total number of claimed wishes
-            claimed_wishes = list(wish_collection.find({"user_id": user_id, 
+            claimed_wishes = list(wish_collection.find({"user_id": ObjectId(user_id), 
                                                    "status": "claimed"}))
             claims = []
             for wish in claimed_wishes:
@@ -26,7 +26,7 @@ def user_public_profile(username):
             total_claims = len(claims)
             
             # calculate total number of wishes
-            wish_list = list(wish_collection.find({"user_id": user_id}))
+            wish_list = list(wish_collection.find({"user_id": ObjectId(user_id)}))
             wishes = []
             for wish in wish_list:
                 wish_data = {}
