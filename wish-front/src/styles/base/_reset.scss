@@ -94,3 +94,15 @@ details {
 summary {
   display: list-item;
 }
+
+input[type="date"]::before {
+  content: attr(placeholder);
+  text-transform: none !important;
+}
+
+// input::-webkit-datetime-edit {
+//   color: transparent;
+// }
+// input:focus::-webkit-datetime-edit {
+//   color: #000;
+// }

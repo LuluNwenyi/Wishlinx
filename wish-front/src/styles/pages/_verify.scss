@@ -1,0 +1,19 @@
+.verify-email {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.verify-email h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.verify-email button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}

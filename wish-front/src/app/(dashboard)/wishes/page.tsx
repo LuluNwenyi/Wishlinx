@@ -1,8 +1,27 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
+import useFetch from "@/hooks/useFetch";
+import FullScreenLoader from "@/src/components/Loader";
 import WishlistItem from "@/src/components/WishlistItem";
 import PlusSvg from "@/src/components/svgs/PlusSvg";
+import { List } from "@/src/types/dashboard";
 import Link from "next/link";
+import { useEffect } from "react";
 
-const Index = () => {
+const Lists = () => {
+  const { data, loading, fetchData } = useFetch<List[]>({
+    url: "/lists",
+    method: "GET",
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <section>
       <h2>Your Lists</h2>
@@ -14,14 +33,24 @@ const Index = () => {
         >
           <PlusSvg /> Create new list
         </Link>
-        {Array(7)
-          .fill(null)
-          .map((_, idx) => (
-            <WishlistItem key={idx} isCard={true} />
-          ))}
+        {data && data.length < 1 ? (
+          <p>No Lists created</p>
+        ) : (
+          <>
+            {data?.map((list) => (
+              <WishlistItem
+                key={list.id}
+                isCard={true}
+                name={list?.title}
+                id={list?.id}
+                expDate={list?.expiry_date}
+              />
+            ))}
+          </>
+        )}
       </div>
     </section>
   );
 };
 
-export default Index;
+export default Lists;

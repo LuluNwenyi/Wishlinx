@@ -9,16 +9,17 @@ const SelectInput = ({
   iPlaceholder,
   options,
   defaultValue,
+  currency = false,
 }: {
   errors?: any;
   extraClass?: string;
   register: any;
-
   sName: string;
   options: string[];
   defaultValue: string;
   iName: string;
-  iPlaceholder: string;
+  iPlaceholder?: string;
+  currency?: boolean;
 }) => {
   return (
     <div className="c-input-wpr--grid">
@@ -37,6 +38,7 @@ const SelectInput = ({
           placeholder: iPlaceholder,
           register,
           errors,
+          currency,
         }}
       />
     </div>

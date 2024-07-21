@@ -1,17 +1,29 @@
 import Link from "next/link";
 import { WishItemProps } from "../types/dashboard";
 
-const WishItem = ({ claimed = false }: WishItemProps) => {
-  return (
-    <Link href="/wishes/wis/j" className="c-wh">
+const WishItem = ({ id, name, price, claimed, currency }: WishItemProps) => {
+  const content = (
+    <>
       <div className="c-wh-hdr">
         <div className="c-wh-hdr-image"></div>
         <div className="c-wh-dtl">
-          <p className="c-wh-title">Apple watch SE 2</p>
-          <p className="c-wh-pre">$ 250</p>
+          <p className="c-wh-title">{name}</p>
+          {currency === "naira" ? (
+            <p className="c-wh-pre">₦{price}</p>
+          ) : (
+            <p className="c-wh-pre">${price}</p>
+          )}
         </div>
       </div>
-      {claimed && <div className="c-wh-cld">CLAIMED</div>}
+      {claimed === "claimed" && <div className="c-wh-cld">CLAIMED</div>}
+    </>
+  );
+
+  return claimed === "claimed" ? (
+    <div className="c-wh c-wh-disabled">{content}</div>
+  ) : (
+    <Link href={`/wishes/wish/${id}`} className="c-wh">
+      {content}
     </Link>
   );
 };

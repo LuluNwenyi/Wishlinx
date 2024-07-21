@@ -45,4 +45,9 @@
     letter-spacing: -0.042rem;
     transform: rotate(21.953deg);
   }
+
+  &-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 }

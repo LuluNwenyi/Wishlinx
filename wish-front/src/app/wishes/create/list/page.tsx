@@ -1,30 +1,31 @@
 "use client";
-import { Breadcrumbs } from "@/src/components/Breadcrumbs";
+import useFetch from "@/hooks/useFetch";
 import Button from "@/src/components/Button";
-import Input from "@/src/components/input/Input";
 import Nav from "@/src/components/Nav";
-import { object as yupObject, string as yupString } from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import Input from "@/src/components/input/Input";
 import Select from "@/src/components/input/Select";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { object as yupObject, string as yupString } from "yup";
 
 const schema = yupObject().shape({
   name: yupString().required("Enter"),
   username: yupString().required("Enter"),
-  category: yupObject().required("Enter"),
+  category: yupString().required("Enter"),
   expiry_date: yupString().required("Enter"),
 });
 
 type SchemaProps = {
   name: string;
   username: string;
-  category: {
-    [key: string]: [string];
-  };
+  category: string;
   expiry_date: string;
 };
 
-const Index = () => {
+const CreateList = () => {
+  const router = useRouter();
+
   const {
     formState: { errors },
     register,
@@ -32,6 +33,32 @@ const Index = () => {
     reset,
     handleSubmit,
   } = useForm<SchemaProps>({ resolver: yupResolver(schema) });
+
+  const { loading, fetchData } = useFetch({
+    url: "/list",
+    method: "POST",
+    shouldToastError: true,
+    revalidateEndpoint: "/lists",
+  });
+
+  const onSubmit = async (formData: SchemaProps) => {
+    const requestBody = {
+      title: formData.name,
+      description: formData.username,
+      category: formData.category,
+      expiry_date: formData.expiry_date,
+    };
+
+    try {
+      const response = await fetchData({ body: requestBody });
+      if (response?.status !== 400) {
+        router.push("/wishes");
+      }
+    } catch (error) {
+      console.error("Error creating list:", error);
+    }
+  };
+
   return (
     <>
       <Nav />
@@ -40,7 +67,7 @@ const Index = () => {
           <section>
             <div>
               <h2>Create new list</h2>
-              <form className="ls-form">
+              <form className="ls-form" onSubmit={handleSubmit(onSubmit)}>
                 <div className="ls-form-left">
                   <div className="ls-form-input">
                     <Input
@@ -66,7 +93,14 @@ const Index = () => {
                         register,
                         defaultValue: "Category",
                         defaultOption: "Category",
-                        options: ["Favour wishlist"],
+                        options: [
+                          "Birthday",
+                          "Anniversary",
+                          "Wedding",
+                          "Baby shower",
+                          "Holiday",
+                          "Other",
+                        ],
                         errors,
                       }}
                     />
@@ -77,7 +111,7 @@ const Index = () => {
                         register,
                         errors,
                         type: "date",
-                        placeholder: "DD/MM/YY",
+                        placeholder: "Expiring date",
                       }}
                     />
                   </div>
@@ -85,6 +119,8 @@ const Index = () => {
                   <Button
                     {...{ text: "Create list" }}
                     extraClass="ls-form-btn"
+                    type="submit"
+                    loading={loading}
                   />
                 </div>
               </form>
@@ -96,4 +132,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default CreateList;

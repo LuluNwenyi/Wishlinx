@@ -6,7 +6,7 @@ import ArrowRightSvg from "./svgs/ArrowRightSvg";
 export const Breadcrumbs = () => {
   const segments = useSelectedLayoutSegments();
 
-  console.log(segments);
+  // console.log(segments);
 
   return (
     <div>

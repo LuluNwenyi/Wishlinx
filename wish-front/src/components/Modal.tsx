@@ -1,28 +1,31 @@
 import { useEffect, useRef } from "react";
-import { handleClickAway } from "../util/dashboard";
 import { ModalProps } from "../types/dashboard";
+import { handleClickAway } from "../util/dashboard";
 
 const Modal = ({ isOpen, setIsOpen, children }: ModalProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const closePopup = () => {
-      setIsOpen((prev) => !prev);
+      setIsOpen(false);
     };
-    containerRef.current?.addEventListener(
-      "click",
-      (e) => {
-        handleClickAway(e, containerRef, closePopup);
-      },
-      true
-    );
+
+    const handleDocumentClick = (e: MouseEvent) => {
+      handleClickAway(e, containerRef, closePopup);
+    };
+
+    if (isOpen) {
+      document.addEventListener("click", handleDocumentClick, true);
+    } else {
+      document.removeEventListener("click", handleDocumentClick, true);
+    }
 
     return () => {
-      containerRef.current?.removeEventListener("click", (e) => {
-        handleClickAway(e, containerRef, closePopup);
-      });
+      document.removeEventListener("click", handleDocumentClick, true);
     };
-  }, []);
+  }, [isOpen, setIsOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="mdl">

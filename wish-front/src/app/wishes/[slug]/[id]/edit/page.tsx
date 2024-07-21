@@ -39,6 +39,7 @@ const Index = () => {
     reset,
     handleSubmit,
   } = useForm<SchemaProps>({ resolver: yupResolver(schema) });
+
   return (
     <>
       <Nav />

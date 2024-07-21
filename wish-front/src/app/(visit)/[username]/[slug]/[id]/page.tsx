@@ -3,15 +3,13 @@
 import useFetch from "@/hooks/useFetch";
 import Button from "@/src/components/Button";
 import Modal from "@/src/components/Modal";
-import Nav from "@/src/components/Nav";
 import WishItem from "@/src/components/WishItem";
 import Input from "@/src/components/input/Input";
 import ClaimModal from "@/src/components/modals/ClaimModal";
 import formatCurrency from "@/src/helpers/formatCurrency";
 import { Wishes } from "@/src/types/dashboard";
-import { readData } from "@/utils/storage";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object as yupObject, string as yupString } from "yup";
@@ -38,10 +36,10 @@ const ClaimItem = () => {
     handleSubmit,
   } = useForm<SchemaProps>({ resolver: yupResolver(schema) });
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const router = useRouter();
-  const { id } = useParams();
-  const listId = readData("listSlug");
-  const url = `${listId}/wish/${id}`;
+
+  const { username, slug, id } = useParams();
+
+  const url = `${slug}/wish/${id}`;
   const {
     data,
     loading,
@@ -63,7 +61,7 @@ const ClaimItem = () => {
     loading: fetchingWishes,
     fetchData: fetchWishes,
   } = useFetch<Wishes[]>({
-    url: `/${listId}/wish`,
+    url: `/${slug}/wish`,
     method: "GET",
   });
 
@@ -77,7 +75,6 @@ const ClaimItem = () => {
 
     if (response && !response.error) {
       setIsOpen(true);
-      router.push("/claims");
     }
   };
 
@@ -92,7 +89,6 @@ const ClaimItem = () => {
 
   return (
     <>
-      <Nav />
       <main>
         <div className="wh-s-wpr">
           <section>
@@ -164,9 +160,8 @@ const ClaimItem = () => {
                         key={wish.id}
                         name={wish?.item}
                         currency={wish?.currency}
-                        id={wish?.id}
+                        id={`/${username}/${slug}/${wish?.id}`}
                         price={wish?.amount}
-                        claimed={wish?.status}
                       />
                     ))}
                   </>

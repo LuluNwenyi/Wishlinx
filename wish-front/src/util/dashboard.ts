@@ -4,7 +4,14 @@ export const genericTextFormat = (
   suffix2?: string
 ) => {
   let formatted = parseInt(toFormat as string);
-  return formatted > 0 ? `${formatted} ${suffix2}` : `${formatted} ${suffix1}`;
+
+  if (isNaN(formatted) || formatted < 1) {
+    return `0 ${suffix1}`;
+  }
+  if (formatted === 1) {
+    return `1 ${suffix1}`;
+  }
+  return `${formatted} ${suffix2 || suffix1}`;
 };
 
 export const handleInputEnter = (e: any) => {
@@ -20,15 +27,11 @@ export const handleInputEnter = (e: any) => {
 };
 
 export const handleClickAway = (
-  e: MouseEvent,
-  containerRef: React.RefObject<HTMLDivElement>,
-  cb: any
+  event: MouseEvent,
+  ref: React.RefObject<HTMLDivElement>,
+  callback: () => void
 ) => {
-  if (
-    containerRef.current &&
-    !containerRef.current.contains(e.target as Node)
-  ) {
-    cb();
-    console.log(e.AT_TARGET);
+  if (ref.current && !ref.current.contains(event.target as Node)) {
+    callback();
   }
 };

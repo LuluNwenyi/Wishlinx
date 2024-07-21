@@ -1,6 +1,7 @@
 import cx from "classnames";
 
 const Button = ({
+  type = "button",
   onClick,
   text,
   loading,
@@ -13,6 +14,7 @@ const Button = ({
 }: {
   onClick?: (props?: any) => void;
   text: string;
+  type?: "button" | "submit" | "reset";
   loadingText?: string;
   loading?: boolean;
   extraClass?: string;
@@ -25,7 +27,7 @@ const Button = ({
   });
   return (
     <button
-      type="button"
+      type={type}
       className={className}
       {...{ onClick, disabled: disabled || loading, ...rest }}
     >

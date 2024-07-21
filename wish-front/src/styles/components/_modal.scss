@@ -58,5 +58,24 @@
       letter-spacing: -0.09rem;
       margin-top: 1.2rem;
     }
+
+    &-share {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+
+      button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+      }
+
+      svg {
+        width: 2rem !important;
+        height: 2rem !important;
+      }
+    }
   }
 }

@@ -1,13 +1,47 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
+import useFetch from "@/hooks/useFetch";
+import FullScreenLoader from "@/src/components/Loader";
 import Nav from "@/src/components/Nav";
-import Profile from "@/src/components/Profile";
 import ArrowRightSvg from "@/src/components/svgs/ArrowRightSvg";
 import EditSvg from "@/src/components/svgs/EditSvg";
 import LovePlusSvg from "@/src/components/svgs/LovePlusSvg";
 import PlusSvg from "@/src/components/svgs/PlusSvg";
 import WishItem from "@/src/components/WishItem";
+import formatCurrency from "@/src/helpers/formatCurrency";
+import { Wishes } from "@/src/types/dashboard";
+import { readData } from "@/utils/storage";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
-const Index = () => {
+const SingleWish = () => {
+  const { id } = useParams();
+  const listId = readData("listSlug");
+  const url = `${listId}/wish/${id}`;
+  const { data, loading, fetchData } = useFetch<Wishes>({
+    url: url,
+    method: "GET",
+  });
+
+  const {
+    data: wishes,
+    loading: fetchingWishes,
+    fetchData: fetchWishes,
+  } = useFetch<Wishes[]>({
+    url: `/${listId}/wish`,
+    method: "GET",
+  });
+
+  useEffect(() => {
+    fetchWishes();
+    fetchData();
+  }, []);
+
+  if (loading || fetchingWishes) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <>
       <Nav />
@@ -22,15 +56,15 @@ const Index = () => {
           <div className="wh-s-pfl">
             <div className="wh-s-pfl-image"></div>
             <div className="wh-s-pfl-dtl">
-              <p className="wh-s-pfl-dtl-status">unclaimed</p>
-              <h3 className="wh-s-pfl-dtl-title">Apple watch SE 2</h3>
-              <p className="wh-s-pfl-dtl-desc">
-                An apple watch so I can track my workouts. 🤭
-              </p>
+              <p className="wh-s-pfl-dtl-status">{data?.status}</p>
+              <h3 className="wh-s-pfl-dtl-title">{data?.item}</h3>
+              <p className="wh-s-pfl-dtl-desc">{data?.description} 🤭</p>
 
               <div className="wh-s-pfl-dtl-info">
-                <p>$300</p> <span />
-                <p>Qty: 7</p>
+                {data && <p>{formatCurrency(data.currency, data.amount)}</p>}
+
+                <span />
+                <p>Qty: {data?.quantity}</p>
               </div>
 
               <div className="wh-s-pfl-dtl-atn">
@@ -38,7 +72,7 @@ const Index = () => {
                   View item
                   <ArrowRightSvg />
                 </Link>
-                <Link href="j/claim" className="wh-s-pfl-dtl-link--fld">
+                <Link href={`${id}/claim`} className="wh-s-pfl-dtl-link--fld">
                   Claim this item
                   <LovePlusSvg />
                 </Link>
@@ -58,11 +92,22 @@ const Index = () => {
                 </Link>
 
                 <div className="wh-grid">
-                  {Array(4)
-                    .fill(null)
-                    .map((_, idx) => (
-                      <WishItem key={idx} />
-                    ))}
+                  {wishes && wishes?.length < 1 ? (
+                    <p>No wishes for this list.</p>
+                  ) : (
+                    <>
+                      {wishes?.map((wish) => (
+                        <WishItem
+                          key={wish.id}
+                          name={wish?.item}
+                          currency={wish?.currency}
+                          id={wish?.id}
+                          price={wish?.amount}
+                          claimed={wish?.status}
+                        />
+                      ))}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -73,4 +118,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default SingleWish;

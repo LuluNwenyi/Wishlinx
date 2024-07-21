@@ -1,7 +1,16 @@
 import Link from "next/link";
+import timeAgo from "../helpers/timeAgo";
 import ClaimSvg from "./svgs/ClaimSvg";
 
-const ClaimItem = () => {
+const ClaimItem = ({
+  wishId,
+  name,
+  time,
+}: {
+  wishId: string;
+  name: string;
+  time: string;
+}) => {
   return (
     <div className="c-clm">
       <div className="c-clm-hdr">
@@ -9,13 +18,13 @@ const ClaimItem = () => {
         <p className="c-clm-title">
           <span className="c-clm-title--bld c-clm-title--dkp">New Claim! </span>
           <Link href="#" className="c-clm-title--uln">
-            Wish #236871
+            Wish #{wishId}
           </Link>
           <span> has been claimed</span>
-          <span className="c-clm-title--dkp"> by Oluchi</span>
+          <span className="c-clm-title--dkp"> by {name}</span>
         </p>
       </div>
-      <p className="c-clm-time">2h ago</p>
+      <p className="c-clm-time">{timeAgo(time)}</p>
     </div>
   );
 };

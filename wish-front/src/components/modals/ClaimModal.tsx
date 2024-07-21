@@ -10,8 +10,7 @@ const ClaimModal = () => {
         <ClaimIllustrationSvg />
         <h5 className="clm-mdl-cnt-title">You’re fulfiling wishes!</h5>
         <p className="clm-mdl-cnt-desc">
-          Thank you for reserving this item. We’ve notified Ayobami of your
-          claim.
+          Thank you for reserving this item. We’ve notified them of your claim.
         </p>
       </div>
     </div>
