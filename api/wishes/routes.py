@@ -105,7 +105,7 @@ def upload_wish_image(wish_id):
 
 # get all wishes
 @wish.route('/<list_id>/wish', methods=['GET'])
-@jwt_required()
+@jwt_required(optional=True)
 def get_wishes(list_id):
     # check if user exists
     user_id = get_jwt_identity()
@@ -144,7 +144,7 @@ def get_wishes(list_id):
 
 # get a wish
 @wish.route('/<list_id>/wish/<wish_id>', methods=['GET'])
-@jwt_required()
+@jwt_required(optional=True)
 def get_wish(list_id, wish_id):
     # check if user exists
     user_id = get_jwt_identity()
