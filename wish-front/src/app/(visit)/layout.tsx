@@ -41,7 +41,7 @@ const VisitorsLayout = ({ children }: { children: React.ReactNode }) => {
         title={userProfile?.name}
         claims={userProfile?.total_claims}
         wishes={userProfile?.total_wishes}
-        link={`https://wishlinx.applikuapp.com/${userProfile?.username}`}
+        link={`https://wishlinx.vercel.app/${userProfile?.username}`}
       />
       <div className="dsb-main-cnt">{children}</div>
     </div>

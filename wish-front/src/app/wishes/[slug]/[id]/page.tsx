@@ -68,7 +68,10 @@ const SingleWish = () => {
               </div>
 
               <div className="wh-s-pfl-dtl-atn">
-                <Link href="#" className=" wh-s-pfl-dtl-link--oln">
+              <Link
+                  href={`${data?.link}`}
+                  className=" wh-s-pfl-dtl-link--oln"
+                >
                   View item
                   <ArrowRightSvg />
                 </Link>

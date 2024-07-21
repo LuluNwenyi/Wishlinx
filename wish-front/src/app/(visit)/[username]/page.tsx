@@ -70,9 +70,9 @@ const UserName = () => {
 
   if (fetchingProfile) return <FullScreenLoader />;
 
-  if (userProfile) {
-    console.log(userProfile.lists);
-  }
+  // if (userProfile) {
+  //   console.log(userProfile.lists);
+  // }
 
   return (
     <>
