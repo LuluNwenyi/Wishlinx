@@ -124,6 +124,7 @@ def get_wishes(list_id):
                 wish_data["amount"] = str(wish['amount'])
                 wish_data["currency"] = str(wish['currency'])
                 wish_data["wish_list"] = str(wish['wish_list'])
+                wish_data["image"] = str(wish['image'])
         
                 wishes.append(wish_data)
                 
@@ -163,6 +164,8 @@ def get_wish(list_id, wish_id):
                 wish_data["amount"] = str(wish['amount'])
                 wish_data["currency"] = str(wish['currency'])
                 wish_data["wish_list"] = str(wish['wish_list'])
+                wish_data["image"] = str(wish['image'])
+
                 
                 return wish_data, 200
             
