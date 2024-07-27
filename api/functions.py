@@ -45,6 +45,14 @@ def send_email(app, recipients, subject, text, sender):
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        
+def get_content_type(filename):
+    extension = filename.rsplit('.', 1)[1].lower()
+    if extension == 'png':
+        return 'image/png'
+    elif extension in {'jpg', 'jpeg'}:
+        return 'image/jpeg'
+    return 'application/octet-stream'  # Default content type if not matched
 
 # s3 upload function
 def s3_upload(file, folder):
@@ -58,10 +66,12 @@ def s3_upload(file, folder):
     bucket=os.environ.get('S3_BUCKET_NAME')
     file_path = file.filename.replace(" ", "-")
     key = folder + "/" + str(uuid.uuid4()) + "-" + file_path
+    content_type = get_content_type(file.filename)
     s3.upload_fileobj(
         file,
         bucket,
-        key
+        key,
+        ExtraArgs={'ContentType': content_type}
         )
     object_url="https://"+bucket+".s3."+os.environ.get('S3_REGION_NAME')+".amazonaws.com/"+key #create Object URL  Manually
     return object_url
