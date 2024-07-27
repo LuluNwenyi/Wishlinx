@@ -10,10 +10,13 @@ import Select from "@/src/components/input/Select";
 import SelectInput from "@/src/components/input/SelectInput";
 import UploadSvg from "@/src/components/svgs/UploadSvg";
 import { List } from "@/src/types/dashboard";
+import { readData } from "@/utils/storage";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { object as yupObject, string as yupString } from "yup";
 
 const schema = yupObject().shape({
@@ -43,6 +46,7 @@ interface CreateWishlist {
   quantity: string;
   currency: "usd" | "naira";
   amount: string;
+  image?: string;
 }
 
 const CreateWish = () => {
@@ -50,6 +54,7 @@ const CreateWish = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState<boolean>(false);
 
   const {
     data,
@@ -96,7 +101,36 @@ const CreateWish = () => {
     handleSubmit,
   } = useForm<SchemaProps>({ resolver: yupResolver(schema) });
 
-  const onSubmit = (data: SchemaProps) => {
+  const uploadImage = async (file: File) => {
+    setImageLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await axios.post("/upload-wish-image", formData, {
+        headers: {
+          Authorization: `Bearer ${readData("saitama-token")}`,
+        },
+      });
+      // console.log(response.data);
+      return response.data.image_url;
+    } catch (error) {
+      toast.error("Image upload failed. Please try again.");
+      return null;
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: SchemaProps) => {
+    let imageUrl: string | null = null;
+
+    if (selectedFile) {
+      imageUrl = await uploadImage(selectedFile);
+    }
+
+    // console.log(imageUrl);
+
     const formattedData: CreateWishlist = {
       item: data.item,
       description: data.description,
@@ -104,6 +138,7 @@ const CreateWish = () => {
       quantity: data.quantity,
       currency: data.currency === "₦" ? "naira" : "usd",
       amount: data.amount,
+      image: imageUrl ?? undefined,
     };
 
     setFormData(formattedData);
@@ -207,7 +242,9 @@ const CreateWish = () => {
                 <div className="ls-form-right">
                   <UploadSvg />
                   <div>
-                    {previewUrl ? (
+                    {imageLoading ? (
+                      <FullScreenLoader />
+                    ) : previewUrl ? (
                       <div>
                         <img
                           src={previewUrl}

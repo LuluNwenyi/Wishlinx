@@ -28,6 +28,7 @@ export interface Wishes {
   quantity: string;
   status: "unclaimed" | "claimed";
   wish_list: string;
+  image?: string;
 }
 
 export interface List {
@@ -48,6 +49,7 @@ export type WishItemProps = {
   claimed?: "claimed" | "unclaimed";
   currency?: "naira" | "dollar";
   slug?: string;
+  image?: string;
 };
 
 export type WishListItemProps = {

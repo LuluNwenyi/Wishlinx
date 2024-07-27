@@ -64,6 +64,10 @@ const Wish = () => {
     return <FullScreenLoader />;
   }
 
+  if (data) {
+    console.log(data);
+  }
+
   return (
     <>
       <Nav />
@@ -104,6 +108,7 @@ const Wish = () => {
                         id={wish?.id}
                         price={wish?.amount}
                         claimed={wish?.status}
+                        image={wish?.image}
                       />
                     ))}
                   </>

@@ -1,11 +1,23 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { WishItemProps } from "../types/dashboard";
 
-const WishItem = ({ id, name, price, claimed, currency }: WishItemProps) => {
+const WishItem = ({
+  id,
+  name,
+  price,
+  claimed,
+  currency,
+  image,
+}: WishItemProps) => {
   const content = (
     <>
       <div className="c-wh-hdr">
-        <div className="c-wh-hdr-image"></div>
+        <div className="c-wh-hdr-image">
+          {image && (
+            <img src={image} alt={name} width={"100%"} height={"100%"} />
+          )}
+        </div>
         <div className="c-wh-dtl">
           <p className="c-wh-title">{name}</p>
           {currency === "naira" ? (

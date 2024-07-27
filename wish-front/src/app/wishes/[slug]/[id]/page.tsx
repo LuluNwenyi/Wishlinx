@@ -68,7 +68,7 @@ const SingleWish = () => {
               </div>
 
               <div className="wh-s-pfl-dtl-atn">
-              <Link
+                <Link
                   href={`${data?.link}`}
                   className=" wh-s-pfl-dtl-link--oln"
                 >
