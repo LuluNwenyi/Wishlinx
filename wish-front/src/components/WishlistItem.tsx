@@ -18,6 +18,7 @@ const WishlistItem = ({
   name,
   expDate,
   id,
+  hexCode,
 }: WishListItemProps) => {
   return (
     <Link
@@ -27,7 +28,12 @@ const WishlistItem = ({
       })}
     >
       <div className="c-wli-hdr">
-        <div className="c-wli-hdr-image"></div>
+      <div
+          className="c-wli-hdr-image"
+          style={{
+            backgroundColor: `#${hexCode}`,
+          }}
+        ></div>
         <div className="c-wli-dtl">
           <p className="c-wli-title">{name}</p>
           <p className="c-wli-date">expires {formatDate(expDate || "")}</p>

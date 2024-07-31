@@ -57,6 +57,7 @@ export type WishListItemProps = {
   name?: string;
   expDate?: string;
   id?: string;
+  hexCode?: string;
 };
 
 export type ProfileProps = {

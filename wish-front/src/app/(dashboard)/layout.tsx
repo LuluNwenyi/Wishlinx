@@ -57,7 +57,7 @@ export default function DashboardLayout({
           title={data?.name}
           claims={totalClaims?.total_claims}
           wishes={totalWishes?.total_wishes}
-          link={`https://wishlinx.applikuapp.com/${data?.username}`}
+          link={`https://wishlinx.vercel.app/${data?.username}`}
         />
         <div className="dsb-main-cnt">{children}</div>
       </main>
